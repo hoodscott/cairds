@@ -7,4 +7,4 @@ Sample of HTML&CSS cards using HTML draggable to move them around.
 Example chat app adapted from socket.io example chat app.
 
 ## game
-//todo - Text based card game.
+The skeleton of a text based card game. 💀
