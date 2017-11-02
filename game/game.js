@@ -22,7 +22,7 @@ class Session {
     for (let i = 0;i < 4; i++){
       let row = [];
       for (let j = 0;j < 13; j++) {
-        row.push(new Pile());
+        row.push(new Pile(false,false,true));
       }
       this.piles.push(row);
     }
@@ -35,8 +35,8 @@ class Session {
     let spile = '';
     this.piles.forEach(function(row, i) {
       row.forEach(function(pile, j) {
-        if (pile.cards.length !== 0) {
-          spile += '\nPile ' + i + ',' + j + ': ' + pile.toString();
+        if (pile.enabled) {
+          spile += '\nPile ' + i + ',' + j + ': (' + pile.toString() + ')';
         }
       })
     })
@@ -65,7 +65,7 @@ class Player {
     this.order = order;
     /* Array of hands of cards this player owns */
     this.hands = [];
-    this.hands.push(new Hand());
+    this.hands.push(new Pile(true,true,false));
   }
   dealCard(card,handIndex) {
     this[handIndex].cards.push(card);
@@ -79,41 +79,16 @@ class Player {
   }
 }
 
-class Hand {
-  constructor(){
-    /* Can the owner view these cards */
-    this.faceup = true;
-    /* Can other players view when faceup */
-    this.private = true;
-    /* Can only the first card be interacted with / viewed */
-    this.stack = false;
-    /* Minimum - Maximum number of cards allowed in this hand */
-    this.size = "0-5";
-    /* Array of cards in this hand */
-    this.cards = [];
-  }
-  dealCard(card){
-    this.cards.push(card);
-  }
-  toString() {
-    let s = '';
-    this.cards.forEach(function(card){
-      s += ',' + card.toString();
-    })
-    return '(' + s.substring(1) + ')';
-  }
-}
-
 class Pile {
-  constructor(){
-    /* SHould this pile be displayed */
-    this.disabled = false;
+  constructor(enable,faceup,stack){
+    /* Should this pile be displayed */
+    this.enabled = enable;
     /* Minimum - Maximum number of cards allowed in this pile */
     this.size = "0-52";
     /* Can everyone see the cards in this pile */
-    this.faceup = true;
+    this.faceup = faceup;
     /* Can only the first card be interacted with / viewed */
-    this.stack = false;
+    this.stack = stack;
     /* Should the cards be overlaid vertically or horizontally 
      * When stack is true, this is overridden */
     this.vertical = false;
@@ -129,9 +104,23 @@ class Pile {
   }
   toString() {
     let s = '';
-    this.cards.forEach(function(card){
-      s += ',' + card.toString();
-    })
+    if (!this.faceup) {
+      this.cards.forEach(function(card){
+        s += ',Back of Card';
+      })
+    }
+    else {
+      const stacked = this.stack;
+      this.cards.forEach(function(card, i, arr){
+        /* Only show top card if stacked */
+        if (stacked && (i + 1 !== arr.length)) {
+          s += ',Back of Card';
+        }
+        else {
+          s += ',' + card.toString();
+        }
+      })
+    }
     return s.substring(1);
   }
 }
@@ -201,9 +190,13 @@ function texasHoldem(g) {
   for (let i = 0; i < 5; i++){
     g.piles[1][i].cards = [];
   }
+  /* Set enabled piles on table */
+  g.piles[0][0].enabled = true;
+  for (let i = 0; i < 5; i++){
+    g.piles[1][i].enabled = true;
+  }
   /* Create and shuffle deck */
-  let deck = g.piles[0][0].cards;
-  deck = createFullDeck();
+  let deck = createFullDeck();
   deck.fy_shuffle();
   /* Deal 2 cards to each player */
   g.players.forEach(function(player) {
@@ -214,20 +207,28 @@ function texasHoldem(g) {
   })
   /* Deal three faceup cards to the table */
   for (let i = 0; i < 3; i++){
-    g.piles[1][i].dealCard(deck.pop())
+    let pile = g.piles[1][i];
+    pile.faceup = true;
+    pile.dealCard(deck.pop())
   }
   /* Deal two facedown cards to the table */
   for (let i = 3; i < 5; i++){
     g.piles[1][i].dealCard(deck.pop())
   }
-  /* Put deck back */
+  /* Put deck on table */
+  console.log(g.piles[0][0].cards.toString());
   g.piles[0][0].cards = deck;
   
-  return g.toString();
+  console.log(g.toString());
+
+  /* Turn over each card */
+  for (let i = 3; i < 5; i++){
+    g.piles[1][i].faceup = true;
+    console.log(g.toString());
+  }
 }
 
 /* Create and run game */
 const player_names = ['Alice','Bob','Charlie','Dave'];
 const game = new Session(player_names);
-console.log(texasHoldem(game));
-
+texasHoldem(game);
