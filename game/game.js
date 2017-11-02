@@ -1,30 +1,46 @@
 /* Global variables for the suit and values */
-const suits = ['S','C','D','H'];
+const suits = ['\u{2660}','\u{2661}','\u{2662}','\u{2663}'];
+const suit_names = ['Spades','Hearts','Diamonds','Clubs'];
 const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King'];
 
 /* Holds the game and state */
 class Session {
-  constructor(num_players){
+  constructor(player_names){
     /* Game Description object */
     this.game = new Game();
 
     /* Array of players */
-    this.players = [];
-    for (let i = 0; i < num_players; i++){
-      let player = new Player(i);
-      this.players.push(player);
-    }
+    let player_arr = [];
+    player_names.forEach(function(p,i) {
+      player_arr.push(new Player(p,i));
+    })
+    this.players = player_arr;    
 
     /* 4x13 Array of card piles */
     this.piles = [];
     for (let i = 0;i < 4; i++){
       let row = [];
       for (let j = 0;j < 13; j++) {
-        let pile = new Pile();
-        row.push(pile);
+        row.push(new Pile());
       }
       this.piles.push(row);
     }
+  }
+  toString() {
+    let splayer = '';
+    this.players.forEach(function(player) {
+      splayer += '\n' + player.toString();
+    })
+    let spile = '';
+    this.piles.forEach(function(row, i) {
+      row.forEach(function(pile, j) {
+        if (pile.cards.length !== 0) {
+          spile += '\nPile ' + i + ',' + j + ': ' + pile.toString();
+        }
+      })
+    })
+    return splayer.slice(1) + '\nTable\n' + spile.slice(1);
   }
 }
 
@@ -43,13 +59,23 @@ class Rules {
 }
 
 class Player {
-  constructor(order){
-    this.name = "PlayerName";
+  constructor(playername, order) {
+    this.name = playername;
     /* Turn order for this player - player one = 0 */
     this.order = order;
     /* Array of hands of cards this player owns */
     this.hands = [];
     this.hands.push(new Hand());
+  }
+  dealCard(card,handIndex) {
+    this[handIndex].cards.push(card);
+  }
+  toString() {
+    let s = '';
+    this.hands.forEach(function(hand, i) {
+      s += '\nHand ' + i + ': ' + hand.toString();
+    })
+    return this.name + '\n' + s.slice(1);
   }
 }
 
@@ -65,7 +91,16 @@ class Hand {
     this.size = "0-5";
     /* Array of cards in this hand */
     this.cards = [];
-    this.cards.push(new Card('D','Q'))
+  }
+  dealCard(card){
+    this.cards.push(card);
+  }
+  toString() {
+    let s = '';
+    this.cards.forEach(function(card){
+      s += ',' + card.toString();
+    })
+    return '(' + s.substring(1) + ')';
   }
 }
 
@@ -88,7 +123,16 @@ class Pile {
     this.place = true;
     /* Array of cards in this pile */
     this.cards = [];
-    this.cards.push(new Card('D','Q'));
+  }
+  dealCard(card){
+    this.cards.push(card);
+  }
+  toString() {
+    let s = '';
+    this.cards.forEach(function(card){
+      s += ',' + card.toString();
+    })
+    return s.substring(1);
   }
 }
 
@@ -98,6 +142,12 @@ class Card {
     this.suit = suit;
     /* A - Ace, J - Jack, Q - Queen, K - King, 2-10 - 2 through 10 */
     this.value = value;
+  }
+  toString() {
+    return value_names[values.indexOf(this.value)] + ' of ' + suit_names[suits.indexOf(this.suit)];
+  }
+  toShortString() {
+    return this.value + this.suit;
   }
 }
 
@@ -141,12 +191,43 @@ function sortCards(a,b){
   }
 }
 
-/* Create 4 player game */
-const ss = new Session(4);
-document.getElementById('session').innerHTML = JSON.stringify(ss);
+/* Basic texas holdem game */
+function texasHoldem(g) {
+  /* Clear hands */
+  g.players.forEach(function(player) {
+    player.hands[0].cards = [];
+  })
+  /* Clear table */
+  for (let i = 0; i < 5; i++){
+    g.piles[1][i].cards = [];
+  }
+  /* Create and shuffle deck */
+  let deck = g.piles[0][0].cards;
+  deck = createFullDeck();
+  deck.fy_shuffle();
+  /* Deal 2 cards to each player */
+  g.players.forEach(function(player) {
+    player.hands[0].dealCard(deck.pop());
+  })
+  g.players.forEach(function(player) {
+    player.hands[0].dealCard(deck.pop());
+  })
+  /* Deal three faceup cards to the table */
+  for (let i = 0; i < 3; i++){
+    g.piles[1][i].dealCard(deck.pop())
+  }
+  /* Deal two facedown cards to the table */
+  for (let i = 3; i < 5; i++){
+    g.piles[1][i].dealCard(deck.pop())
+  }
+  /* Put deck back */
+  g.piles[0][0].cards = deck;
+  
+  return g.toString();
+}
 
-/* Create and shuffle and sort a new deck of cards */
-const deck = createFullDeck();
-deck.fy_shuffle();
-deck.sort(sortCards);
-document.getElementById('deck').innerHTML = JSON.stringify(deck);
+/* Create and run game */
+const player_names = ['Alice','Bob','Charlie','Dave'];
+const game = new Session(player_names);
+console.log(texasHoldem(game));
+
