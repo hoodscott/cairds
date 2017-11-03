@@ -6,7 +6,7 @@ const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','
 
 /* Holds the game and state */
 class Session {
-  constructor(player_names){
+  constructor(player_names, hand_params = [], pile_params = [[]]){
     /* Game Description object */
     this.game = new Game();
 
@@ -27,6 +27,24 @@ class Session {
       this.piles.push(row);
     }
   }
+  /* Shuffle and store specified cards */
+  shufflePile(row,col){}
+  shuffleHand(player_name,hand){}
+  /* Sort and store specified cards */
+  sortPile(row,col){}
+  sortHand(player_name,hand){}
+  /* Overwrite value with specified cards */
+  setPile(row,col,cards = []){}
+  setHand(player_name,hand,cards = []){}
+  /* Deal one card to group of cards */
+  addtoPile(row,col,card){}
+  addtoHand(player_name,hand,card){}
+  /* Transfer functions */
+  dealCard(row_from,col_from,player_name_to,hand_to){}
+  moveCard(row_from,col_from,row_to,col_to){}
+  playCard(player_name_from,hand_from,row_to,col_to){}
+  transferCard(player_name_from,hand_from,player_name_to,hand_to){}
+  
   toString() {
     let splayer = '';
     this.players.forEach(function(player) {
