@@ -7,7 +7,7 @@ const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','
 
 /* Holds the game and state */
 class Session {
-  constructor(player_names, hand_params = [], pile_params = [[]]){
+  constructor(player_names, hand_params = [], pile_params = [[]]) {
     /* Array of players */
     let player_arr = [];
     player_names.forEach(function(p,i) {
@@ -17,7 +17,7 @@ class Session {
 
     /* 4x13 Array of card piles */
     this.piles = [];
-    for (let i = 0;i < 4; i++){
+    for (let i = 0;i < 4; i++) {
       let row = [];
       for (let j = 0;j < 13; j++) {
         row.push(new Pile(...pile_params[i][j]));
@@ -46,8 +46,8 @@ class Session {
   getCardsfromHand(player,hand) {
     return this.players[player].hands[hand].cards.splice(0);
   }
-   /* Deal one card to group of cards */
-   addtoPile(row,col,card) {
+  /* Deal one card to group of cards */
+  addtoPile(row,col,card) {
     this.piles[row][col].cards.push(card);
   }
   addtoHand(player,hand,card) {
@@ -66,7 +66,7 @@ class Session {
   setHand(player,hand,cards = []) {
     this.players[player].hands[hand].cards = cards;
   }
-  /* Set pile properties */
+  /* Set properties */
   setPileFaceUp(row,col,faceup) {
     this.piles[row][col].faceup = faceup;
   }
@@ -87,7 +87,6 @@ class Session {
   sortHand(player,hand) {
     this.players[player].hands[hand].cards.sort(sortCards);
   }
- 
   /* Return string representation */
   toString() {
     let splayer = '';
@@ -131,7 +130,7 @@ class Player {
 }
 
 class Pile {
-  constructor(enable = false,faceup = false,stack = false){
+  constructor(enable = false,faceup = false,stack = false) {
     /* Should this pile be displayed */
     this.enabled = enable;
     /* Minimum - Maximum number of cards allowed in this pile */
@@ -150,19 +149,19 @@ class Pile {
     /* Array of cards in this pile */
     this.cards = [];
   }
-  dealCard(card){
+  dealCard(card) {
     this.cards.push(card);
   }
   toString() {
     let s = '';
     if (!this.faceup) {
-      this.cards.forEach(function(card){
+      this.cards.forEach(function(card) {
         s += ',Back of Card';
       })
     }
     else {
       const stacked = this.stack;
-      this.cards.forEach(function(card, i, arr){
+      this.cards.forEach(function(card, i, arr) {
         /* Only show top card if stacked */
         if (stacked && (i + 1 !== arr.length)) {
           s += ',Back of Card';
@@ -177,7 +176,7 @@ class Pile {
 }
 
 class Card {
-  constructor(suit,value){
+  constructor(suit,value) {
     /* S - Spades, C - Clubs, D - Diamonds, H - Hearts */
     this.suit = suit;
     /* A - Ace, J - Jack, Q - Queen, K - King, 2-10 - 2 through 10 */
@@ -192,9 +191,9 @@ class Card {
 }
 
 /* Creates an array of 52 cards */
-function createFullDeck(){
+function createFullDeck() {
   const deck = [];
-  for (let i = 0; i < 52; i++){
+  for (let i = 0; i < 52; i++) {
     /* Use bitshifting to perform integer division and find the suit */
     const suit = suits[i/13 >> 0]
     /* Converting the index to a value or face card letter */
@@ -222,7 +221,7 @@ Array.prototype.fy_shuffle = function() {
 }
 
 /* Function to define how the cards are to be sorted */
-function sortCards(a,b){
+function sortCards(a,b) {
   if (a.suit === b.suit) {
     return values.indexOf(a.value) - values.indexOf(b.value);
   }
@@ -246,28 +245,28 @@ function th1(g) {
   g.setPile(0,0,createFullDeck());
   g.shufflePile(0,0);
   /* Clear piles */
-  for (let i = 0; i < 5; i++){
+  for (let i = 0; i < 5; i++) {
     g.setPile(1,i,[]);
     if (i > 2) {
       g.setPileFaceUp(1,i,false);
     }
   }
   /* Clear hands */
-  for (let i = 0; i < 4; i++){
+  for (let i = 0; i < 4; i++) {
     g.setHand(i,0,[]);
   }
   console.log(g.toString());
 }
 function th2(g) {
   /* Deal 2 cards to each player */
-  for (let i = 0; i < 4; i++){
+  for (let i = 0; i < 4; i++) {
     g.addtoHand(i,0,g.getTopCardfromPile(0,0));
   }
-  for (let i = 0; i < 4; i++){
+  for (let i = 0; i < 4; i++) {
     g.addtoHand(i,0,g.getTopCardfromPile(0,0));
   }
   /* Deal 5 cards to table */
-  for (let i = 0; i < 5; i++){
+  for (let i = 0; i < 5; i++) {
     g.addtoPile(1,i,g.getTopCardfromPile(0,0));
   }
   console.log(g.toString());
