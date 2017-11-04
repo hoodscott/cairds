@@ -1,5 +1,6 @@
 /* Global variables for the suit and values */
-const suits = ['\u{2660}','\u{2661}','\u{2662}','\u{2663}'];
+const suits = ['S','H','D','C'];
+const suit_symbols = ['\u{2660}','\u{2661}','\u{2662}','\u{2663}'];
 const suit_names = ['Spades','Hearts','Diamonds','Clubs'];
 const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King'];
@@ -7,44 +8,87 @@ const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','
 /* Holds the game and state */
 class Session {
   constructor(player_names, hand_params = [], pile_params = [[]]){
-    /* Game Description object */
-    this.game = new Game();
-
     /* Array of players */
     let player_arr = [];
     player_names.forEach(function(p,i) {
-      player_arr.push(new Player(p,i));
+      player_arr.push(new Player(p,i,hand_params));
     })
-    this.players = player_arr;    
+    this.players = player_arr;  
 
     /* 4x13 Array of card piles */
     this.piles = [];
     for (let i = 0;i < 4; i++){
       let row = [];
       for (let j = 0;j < 13; j++) {
-        row.push(new Pile(false,false,true));
+        row.push(new Pile(...pile_params[i][j]));
       }
       this.piles.push(row);
     }
   }
-  /* Shuffle and store specified cards */
-  shufflePile(row,col){}
-  shuffleHand(player_name,hand){}
-  /* Sort and store specified cards */
-  sortPile(row,col){}
-  sortHand(player_name,hand){}
+  /* Get card from a pile  */
+  getCardfromPile(row,col,i) {
+    const i = this.piles[row][col].cards.indexOf(card);
+    return this.piles[row][col].cards.splice(i,1);
+  }
+  getCardFromHand(player,hand,card) {
+    const i = this.players[player].hands[hand].cards.indexOf(card);
+    return this.players[player].hands[hand].cards.splice(i,1);
+  }
+  getTopCardfromPile(row,col) {
+    return this.piles[row][col].cards.pop();
+  }
+  getTopCardfromHand(player,card) {
+    return this.players[player].hands[hand].cards.pop();
+  }
+  getCardsfromPile(row,col) {
+    return this.piles[row][col].cards.splice(0);
+  }
+  getCardsfromHand(player,hand) {
+    return this.players[player].hands[hand].cards.splice(0);
+  }
+   /* Deal one card to group of cards */
+   addtoPile(row,col,card) {
+    this.piles[row][col].cards.push(card);
+  }
+  addtoHand(player,hand,card) {
+    this.players[player].hands[hand].cards.push(card);
+  }
+  addtoPileBottom(row,col,card) {
+    this.piles[row][col].cards.unshift(card);
+  }
+  addtoHandBottom(player,hand,card) {
+    this.players[player].hands[hand].cards.unshift(card);
+  }
   /* Overwrite value with specified cards */
-  setPile(row,col,cards = []){}
-  setHand(player_name,hand,cards = []){}
-  /* Deal one card to group of cards */
-  addtoPile(row,col,card){}
-  addtoHand(player_name,hand,card){}
-  /* Transfer functions */
-  dealCard(row_from,col_from,player_name_to,hand_to){}
-  moveCard(row_from,col_from,row_to,col_to){}
-  playCard(player_name_from,hand_from,row_to,col_to){}
-  transferCard(player_name_from,hand_from,player_name_to,hand_to){}
-  
+  setPile(row,col,cards = []) {
+    this.piles[row][col].cards = cards;
+  }
+  setHand(player,hand,cards = []) {
+    this.players[player].hands[hand].cards = cards;
+  }
+  /* Set pile properties */
+  setPileFaceUp(row,col,faceup) {
+    this.piles[row][col].faceup = faceup;
+  }
+  setHandFaceUp(player,hand,faceup) {
+    this.players[player].hands[hand].faceup = faceup;
+  }
+  /* Shuffle specified cards */
+  shufflePile(row,col) {
+    this.piles[row][col].cards.fy_shuffle();
+  }
+  shuffleHand(player,hand) {
+    this.players[player].hands[hand].cards.fy_shuffle();
+  }
+  /* Sort specified cards */
+  sortPile(row,col) {
+    this.piles[row][col].cards.sort(sortCards);
+  }
+  sortHand(player,hand) {
+    this.players[player].hands[hand].cards.sort(sortCards);
+  }
+ 
+  /* Return string representation */
   toString() {
     let splayer = '';
     this.players.forEach(function(player) {
@@ -62,28 +106,17 @@ class Session {
   }
 }
 
-class Game {
-  constructor(){
-    this.name = "game name";
-    this.rules = new Rules();
-  }
-}
-
-class Rules {
-  constructor(){
-    this.field1 = '1';
-    this.field2 = '2';
-  }
-}
-
 class Player {
-  constructor(playername, order) {
+  constructor(playername, order, player_params) {
     this.name = playername;
     /* Turn order for this player - player one = 0 */
     this.order = order;
     /* Array of hands of cards this player owns */
-    this.hands = [];
-    this.hands.push(new Pile(true,true,false));
+    const h = [];
+    player_params.forEach(function(params,i) {
+      h.push(new Pile(...params));
+    });
+    this.hands = h;
   }
   dealCard(card,handIndex) {
     this[handIndex].cards.push(card);
@@ -92,13 +125,13 @@ class Player {
     let s = '';
     this.hands.forEach(function(hand, i) {
       s += '\nHand ' + i + ': ' + hand.toString();
-    })
+    });
     return this.name + '\n' + s.slice(1);
   }
 }
 
 class Pile {
-  constructor(enable,faceup,stack){
+  constructor(enable = false,faceup = false,stack = false){
     /* Should this pile be displayed */
     this.enabled = enable;
     /* Minimum - Maximum number of cards allowed in this pile */
@@ -199,54 +232,60 @@ function sortCards(a,b){
 }
 
 /* Basic texas holdem game */
-function texasHoldem(g) {
-  /* Clear hands */
-  g.players.forEach(function(player) {
-    player.hands[0].cards = [];
-  })
-  /* Clear table */
-  for (let i = 0; i < 5; i++){
-    g.piles[1][i].cards = [];
-  }
-  /* Set enabled piles on table */
-  g.piles[0][0].enabled = true;
-  for (let i = 0; i < 5; i++){
-    g.piles[1][i].enabled = true;
-  }
+function th0() {
+  const player_names = ['Alice','Bob','Charlie','Dave'];
+  const hand_params = [[true,true,false]];
+  const pile_params = [[[true,false,true],[],[],[],[],[],[],[],[],[],[],[],[]],
+                       [[true,true,true],[true,true,true],[true,true,true],[true,false,true],[true,false,true],[],[],[],[],[],[],[],[]],
+                       [[],[],[],[],[],[],[],[],[],[],[],[],[]],
+                       [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
+  return new Session(player_names,hand_params,pile_params);
+}
+function th1(g) {
   /* Create and shuffle deck */
-  let deck = createFullDeck();
-  deck.fy_shuffle();
-  /* Deal 2 cards to each player */
-  g.players.forEach(function(player) {
-    player.hands[0].dealCard(deck.pop());
-  })
-  g.players.forEach(function(player) {
-    player.hands[0].dealCard(deck.pop());
-  })
-  /* Deal three faceup cards to the table */
-  for (let i = 0; i < 3; i++){
-    let pile = g.piles[1][i];
-    pile.faceup = true;
-    pile.dealCard(deck.pop())
+  g.setPile(0,0,createFullDeck());
+  g.shufflePile(0,0);
+  /* Clear piles */
+  for (let i = 0; i < 5; i++){
+    g.setPile(1,i,[]);
+    if (i > 2) {
+      g.setPileFaceUp(1,i,false);
+    }
   }
-  /* Deal two facedown cards to the table */
-  for (let i = 3; i < 5; i++){
-    g.piles[1][i].dealCard(deck.pop())
+  /* Clear hands */
+  for (let i = 0; i < 4; i++){
+    g.setHand(i,0,[]);
   }
-  /* Put deck on table */
-  console.log(g.piles[0][0].cards.toString());
-  g.piles[0][0].cards = deck;
-  
   console.log(g.toString());
-
-  /* Turn over each card */
-  for (let i = 3; i < 5; i++){
-    g.piles[1][i].faceup = true;
-    console.log(g.toString());
+}
+function th2(g) {
+  /* Deal 2 cards to each player */
+  for (let i = 0; i < 4; i++){
+    g.addtoHand(i,0,g.getTopCardfromPile(0,0));
   }
+  for (let i = 0; i < 4; i++){
+    g.addtoHand(i,0,g.getTopCardfromPile(0,0));
+  }
+  /* Deal 5 cards to table */
+  for (let i = 0; i < 5; i++){
+    g.addtoPile(1,i,g.getTopCardfromPile(0,0));
+  }
+  console.log(g.toString());
+}
+function th3(g) {
+  /* Flip river */
+  g.setPileFaceUp(1,3,true);
+  console.log(g.toString());
+}
+function th4(g) {
+  /* Flip turn */
+  g.setPileFaceUp(1,4,true);
+  console.log(g.toString());
 }
 
 /* Create and run game */
-const player_names = ['Alice','Bob','Charlie','Dave'];
-const game = new Session(player_names);
-texasHoldem(game);
+const game = th0();
+th1(game);
+th2(game);
+th3(game);
+th4(game);
