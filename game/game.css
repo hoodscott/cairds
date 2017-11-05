@@ -1,0 +1,12 @@
+#player-holder>.card-holder:nth-child(1){
+  background-color:rgb(88, 188, 206);
+}
+#player-holder>.card-holder:nth-child(2){
+  background-color:rgb(231, 131, 131);
+}
+#player-holder>.card-holder:nth-child(3){
+  background-color:rgb(138, 228, 138);
+}
+#player-holder>.card-holder:nth-child(4){
+  background-color:yellow;
+}

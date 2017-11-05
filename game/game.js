@@ -103,6 +103,34 @@ class Session {
     })
     return splayer.slice(1) + '\nTable\n' + spile.slice(1);
   }
+  toHTML(el) {
+    /* Clear element */
+    while (el.lastChild) {
+      el.removeChild(el.lastChild);
+    }
+    /* Set pile elements into rows */
+    let pile_holder = document.createElement('div');
+    pile_holder.id = 'pile-holder';
+    this.piles.forEach(function(row, i) {
+      let pile_row = document.createElement('div');
+      pile_row.id = "pile_row_" + i;
+      row.forEach(function(pile, j) {
+        if (pile.enabled) {
+          pile_row.appendChild(pile.toHTML());
+        }
+      })
+      pile_holder.appendChild(pile_row);
+    })
+    /* Set player elements into a row */
+    let player_holder = document.createElement('div');
+    player_holder.id = 'player-holder';
+    this.players.forEach(function(player) {
+      player_holder.appendChild(player.toHTML());
+    })
+    /* Add the nodes to the passed in element */
+    el.appendChild(pile_holder);
+    el.appendChild(player_holder);
+  }
 }
 
 class Player {
@@ -126,6 +154,9 @@ class Player {
       s += '\nHand ' + i + ': ' + hand.toString();
     });
     return this.name + '\n' + s.slice(1);
+  }
+  toHTML() {
+    return this.hands[0].toHTML();
   }
 }
 
@@ -173,6 +204,45 @@ class Pile {
     }
     return s.substring(1);
   }
+  toHTML() {
+    let card_holder = document.createElement('div');
+    card_holder.classList.add("card-holder");
+    if (this.stack) {
+      card_holder.classList.add('stack');
+      if (this.faceup){
+        if (this.cards.length !== 0) {
+          
+          card_holder.appendChild(this.cards[0].toHTML());
+        }
+      }
+      else {
+        if (this.cards.length !== 0) {
+          let card = document.createElement('div');
+          card.innerHTML = 'BC';
+          card.classList.add('card');
+          card.classList.add('card-back');
+          card_holder.appendChild(card);
+        }
+        
+      }
+    }
+    else {
+      const faceup = this.faceup;      
+      this.cards.forEach(function(card, i) {
+        if (faceup) {
+          card_holder.appendChild(card.toHTML());
+        }
+        else {
+          let card = document.createElement('div');
+          card.innerHTML = 'BC';
+          card.classList.add('card');
+          card.classList.add('back-card');
+          card_holder.appendChild(card);
+        }
+      })
+    }
+    return card_holder;
+  }
 }
 
 class Card {
@@ -187,6 +257,14 @@ class Card {
   }
   toShortString() {
     return this.value + this.suit;
+  }
+  toHTML() {
+    let card = document.createElement('div');
+    card.innerHTML = this.toShortString();
+    card.classList.add('card');
+    card.classList.add(this.suit);
+    card.classList.add(this.value);
+    return card;
   }
 }
 
@@ -255,6 +333,7 @@ function th1(g) {
   for (let i = 0; i < 4; i++) {
     g.setHand(i,0,[]);
   }
+  g.toHTML(document.getElementById('game-holder'));
   console.log(g.toString());
 }
 function th2(g) {
@@ -270,21 +349,40 @@ function th2(g) {
     g.addtoPile(1,i,g.getTopCardfromPile(0,0));
   }
   console.log(g.toString());
+  g.toHTML(document.getElementById('game-holder'));
 }
 function th3(g) {
   /* Flip river */
   g.setPileFaceUp(1,3,true);
   console.log(g.toString());
+  g.toHTML(document.getElementById('game-holder'));
 }
 function th4(g) {
   /* Flip turn */
   g.setPileFaceUp(1,4,true);
   console.log(g.toString());
+  g.toHTML(document.getElementById('game-holder'));
 }
 
 /* Create and run game */
 const game = th0();
-th1(game);
-th2(game);
-th3(game);
-th4(game);
+document.getElementById('step1').addEventListener('click', function(){
+  th1(game);
+  this.disabled = true;
+  document.getElementById('step2').disabled = false;
+})
+document.getElementById('step2').addEventListener('click', function(){
+  th2(game);
+  this.disabled = true;
+  document.getElementById('step3').disabled = false;
+})
+document.getElementById('step3').addEventListener('click', function(){
+  th3(game);
+  this.disabled = true;
+  document.getElementById('step4').disabled = false;
+})
+document.getElementById('step4').addEventListener('click', function(){
+  th4(game);
+  this.disabled = true;
+  document.getElementById('step1').disabled = false;
+})
