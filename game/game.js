@@ -1,6 +1,6 @@
 /* Global variables for the suit and values */
 const suits = ['S','H','D','C'];
-const suit_symbols = ['\u{2660}','\u{2661}','\u{2662}','\u{2663}'];
+const suit_symbols = ['\u{2660}','\u{2665}','\u{2666}','\u{2663}'];
 const suit_names = ['Spades','Hearts','Diamonds','Clubs'];
 const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King'];
@@ -218,15 +218,20 @@ class Pile {
       else {
         if (this.cards.length !== 0) {
           let card = document.createElement('div');
-          card.innerHTML = 'BC';
           card.classList.add('card');
-          card.classList.add('card-back');
+          card.classList.add('back');
           card_holder.appendChild(card);
         }
         
       }
     }
     else {
+      if (this.vertical) {
+        card_holder.classList.add("vertical");
+      }
+      else {
+        card_holder.classList.add("horizontal");
+      }
       const faceup = this.faceup;      
       this.cards.forEach(function(card, i) {
         if (faceup) {
@@ -236,7 +241,7 @@ class Pile {
           let card = document.createElement('div');
           card.innerHTML = 'BC';
           card.classList.add('card');
-          card.classList.add('back-card');
+          card.classList.add('back');
           card_holder.appendChild(card);
         }
       })
@@ -260,9 +265,14 @@ class Card {
   }
   toHTML() {
     let card = document.createElement('div');
-    card.innerHTML = this.toShortString();
+    let el_val =  document.createElement('p');
+    el_val.innerHTML = this.value;
+    let el_suit = document.createElement('p');
+    el_suit.innerHTML = suit_symbols[suits.indexOf(this.suit)];
+    card.appendChild(el_val);
+    card.appendChild(el_suit);
     card.classList.add('card');
-    card.classList.add(this.suit);
+    card.classList.add(suit_names[suits.indexOf(this.suit)]);
     card.classList.add(this.value);
     return card;
   }
