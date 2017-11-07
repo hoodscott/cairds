@@ -103,7 +103,7 @@ class Session {
     })
     return splayer.slice(1) + '\nTable\n' + spile.slice(1);
   }
-  toHTML(el) {
+  toHTML(el, play_order='') {
     /* Clear element */
     while (el.lastChild) {
       el.removeChild(el.lastChild);
@@ -125,7 +125,7 @@ class Session {
     let player_holder = document.createElement('div');
     player_holder.id = 'player-holder';
     this.players.forEach(function(player) {
-      player_holder.appendChild(player.toHTML());
+      player_holder.appendChild(player.toHTML(play_order));
     })
     /* Add the nodes to the passed in element */
     el.appendChild(pile_holder);
@@ -155,13 +155,17 @@ class Player {
     });
     return this.name + '\n' + s.slice(1);
   }
-  toHTML() {
-    return this.hands[0].toHTML();
+  toHTML(play_order='') {
+    let holder = false;
+    if (this.order == play_order){
+      holder = true;
+    }
+    return this.hands[0].toHTML(holder);
   }
 }
 
 class Pile {
-  constructor(enable = false,faceup = false,stack = false) {
+  constructor(enable = false, faceup = false, stack = false, secret=false) {
     /* Should this pile be displayed */
     this.enabled = enable;
     /* Minimum - Maximum number of cards allowed in this pile */
@@ -170,6 +174,8 @@ class Pile {
     this.faceup = faceup;
     /* Can only the first card be interacted with / viewed */
     this.stack = stack;
+    /* Can only the holder see this */
+    this.secret = secret;
     /* Should the cards be overlaid vertically or horizontally 
      * When stack is true, this is overridden */
     this.vertical = false;
@@ -204,15 +210,22 @@ class Pile {
     }
     return s.substring(1);
   }
-  toHTML() {
+  toHTML(owner = false) {
     let card_holder = document.createElement('div');
     card_holder.classList.add("card-holder");
     if (this.stack) {
       card_holder.classList.add('stack');
       if (this.faceup){
         if (this.cards.length !== 0) {
-          
-          card_holder.appendChild(this.cards[0].toHTML());
+          if (this.secret && !owner){
+            let card = document.createElement('div');
+            card.classList.add('card');
+            card.classList.add('back');
+            card_holder.appendChild(card);
+          }
+          else {
+            card_holder.appendChild(this.cards[0].toHTML());
+          }
         }
       }
       else {
@@ -222,7 +235,6 @@ class Pile {
           card.classList.add('back');
           card_holder.appendChild(card);
         }
-        
       }
     }
     else {
@@ -232,10 +244,19 @@ class Pile {
       else {
         card_holder.classList.add("horizontal");
       }
-      const faceup = this.faceup;      
+      const faceup = this.faceup;
+      const secret = this.secret;
       this.cards.forEach(function(card, i) {
         if (faceup) {
-          card_holder.appendChild(card.toHTML());
+          if (secret && !owner){
+            let back_card = document.createElement('div');
+            back_card.classList.add('card');
+            back_card.classList.add('back');
+            card_holder.appendChild(back_card);
+          }
+          else {
+            card_holder.appendChild(card.toHTML());
+          }
         }
         else {
           let card = document.createElement('div');
@@ -321,7 +342,7 @@ function sortCards(a,b) {
 /* Basic texas holdem game */
 function th0() {
   const player_names = ['Alice','Bob','Charlie','Dave'];
-  const hand_params = [[true,true,false]];
+  const hand_params = [[true,true,false,true]];
   const pile_params = [[[true,false,true],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[true,true,true],[true,true,true],[true,true,true],[true,false,true],[true,false,true],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]],
@@ -343,7 +364,7 @@ function th1(g) {
   for (let i = 0; i < 4; i++) {
     g.setHand(i,0,[]);
   }
-  g.toHTML(document.getElementById('game-holder'));
+  g.toHTML(document.getElementById('game-holder'), player);
   document.getElementById('step1').disabled = true;
   document.getElementById('step2').disabled = false;
 }
@@ -359,27 +380,28 @@ function th2(g) {
   for (let i = 0; i < 5; i++) {
     g.addtoPile(1,i,g.getTopCardfromPile(0,0));
   }
-  g.toHTML(document.getElementById('game-holder'));
+  g.toHTML(document.getElementById('game-holder'), player);
   document.getElementById('step2').disabled = true;
   document.getElementById('step3').disabled = false;
 }
 function th3(g) {
   /* Flip river */
   g.setPileFaceUp(1,3,true);
-  g.toHTML(document.getElementById('game-holder'));
+  g.toHTML(document.getElementById('game-holder'), player);
   document.getElementById('step3').disabled = true;
   document.getElementById('step4').disabled = false;
 }
 function th4(g) {
   /* Flip turn */
   g.setPileFaceUp(1,4,true);
-  g.toHTML(document.getElementById('game-holder'));
+  g.toHTML(document.getElementById('game-holder'), player);
   document.getElementById('step4').disabled = true;
   document.getElementById('step1').disabled = false;
 }
 
 /* Create and run game */
 let game = th0();
+let player = '';
 document.getElementById('step1').addEventListener('click', function(){
   th1(game);
   socket.emit('move','1');
@@ -399,13 +421,48 @@ document.getElementById('step4').addEventListener('click', function(){
   socket.emit('move','4');
   document.getElementById('step1').disabled = false;
 })
+document.getElementById('blue-select').addEventListener('click', function(){
+  player = '0';
+  [].forEach.call(
+    document.getElementsByClassName('player-select'),
+    function(e){
+      e.disabled = true;
+    }
+  )
+})
+document.getElementById('red-select').addEventListener('click', function(){
+  player = '1';
+  [].forEach.call(
+    document.getElementsByClassName('player-select'),
+    function(e){
+      e.disabled = true;
+    }
+  )
+})
+document.getElementById('green-select').addEventListener('click', function(){
+  player = '2';
+  [].forEach.call(
+    document.getElementsByClassName('player-select'),
+    function(e){
+      e.disabled = true;
+    }
+  )
+})
+document.getElementById('yellow-select').addEventListener('click', function(){
+  player = '3';
+  [].forEach.call(
+    document.getElementsByClassName('player-select'),
+    function(e){
+      e.disabled = true;
+    }
+  )
+})
 
 const socket = io();
 
 /* Listen for moves over the socket */
 socket.on('move', function(g) {
   /* Move */
-  console.log(g);
   switch(g){
     case '1':
       th1(game);
