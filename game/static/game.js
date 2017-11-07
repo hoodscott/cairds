@@ -344,7 +344,8 @@ function th1(g) {
     g.setHand(i,0,[]);
   }
   g.toHTML(document.getElementById('game-holder'));
-  console.log(g.toString());
+  document.getElementById('step1').disabled = true;
+  document.getElementById('step2').disabled = false;
 }
 function th2(g) {
   /* Deal 2 cards to each player */
@@ -358,41 +359,66 @@ function th2(g) {
   for (let i = 0; i < 5; i++) {
     g.addtoPile(1,i,g.getTopCardfromPile(0,0));
   }
-  console.log(g.toString());
   g.toHTML(document.getElementById('game-holder'));
+  document.getElementById('step2').disabled = true;
+  document.getElementById('step3').disabled = false;
 }
 function th3(g) {
   /* Flip river */
   g.setPileFaceUp(1,3,true);
-  console.log(g.toString());
   g.toHTML(document.getElementById('game-holder'));
+  document.getElementById('step3').disabled = true;
+  document.getElementById('step4').disabled = false;
 }
 function th4(g) {
   /* Flip turn */
   g.setPileFaceUp(1,4,true);
-  console.log(g.toString());
   g.toHTML(document.getElementById('game-holder'));
+  document.getElementById('step4').disabled = true;
+  document.getElementById('step1').disabled = false;
 }
 
 /* Create and run game */
-const game = th0();
+let game = th0();
 document.getElementById('step1').addEventListener('click', function(){
   th1(game);
-  this.disabled = true;
-  document.getElementById('step2').disabled = false;
+  socket.emit('move','1');
 })
 document.getElementById('step2').addEventListener('click', function(){
   th2(game);
-  this.disabled = true;
+  socket.emit('move','2');
   document.getElementById('step3').disabled = false;
 })
 document.getElementById('step3').addEventListener('click', function(){
   th3(game);
-  this.disabled = true;
+  socket.emit('move','3');
   document.getElementById('step4').disabled = false;
 })
 document.getElementById('step4').addEventListener('click', function(){
   th4(game);
-  this.disabled = true;
+  socket.emit('move','4');
   document.getElementById('step1').disabled = false;
 })
+
+const socket = io();
+
+/* Listen for moves over the socket */
+socket.on('move', function(g) {
+  /* Move */
+  console.log(g);
+  switch(g){
+    case '1':
+      th1(game);
+      break;
+    case '2':
+      th2(game);
+      break;
+    case '3':
+      th3(game);
+      break;
+    case '4':
+      th4(game);
+      break;
+  }
+});
+
