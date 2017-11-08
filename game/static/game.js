@@ -219,6 +219,7 @@ class Pile {
         if (this.cards.length !== 0) {
           if (this.secret && !owner){
             let card = document.createElement('div');
+            card.draggable = "true";
             card.classList.add('card');
             card.classList.add('back');
             card_holder.appendChild(card);
@@ -231,6 +232,7 @@ class Pile {
       else {
         if (this.cards.length !== 0) {
           let card = document.createElement('div');
+          card.draggable = "true";
           card.classList.add('card');
           card.classList.add('back');
           card_holder.appendChild(card);
@@ -250,6 +252,7 @@ class Pile {
         if (faceup) {
           if (secret && !owner){
             let back_card = document.createElement('div');
+            back_card.draggable = "true";
             back_card.classList.add('card');
             back_card.classList.add('back');
             card_holder.appendChild(back_card);
@@ -260,7 +263,7 @@ class Pile {
         }
         else {
           let card = document.createElement('div');
-          card.innerHTML = 'BC';
+          card.draggable = "true";
           card.classList.add('card');
           card.classList.add('back');
           card_holder.appendChild(card);
@@ -292,6 +295,7 @@ class Card {
     el_suit.innerHTML = suit_symbols[suits.indexOf(this.suit)];
     card.appendChild(el_val);
     card.appendChild(el_suit);
+    card.draggable = "true";
     card.classList.add('card');
     card.classList.add(suit_names[suits.indexOf(this.suit)]);
     card.classList.add(this.value);
@@ -337,6 +341,47 @@ function sortCards(a,b) {
   else {
     return suits.indexOf(a.suit) - suits.indexOf(b.suit);
   }
+}
+
+/* Draggable functions */
+const cards = document.querySelectorAll('.card');
+const holders = document.querySelectorAll('.card-holder');
+let dragged_card;
+let dragged_holder;
+function handleDragStart(e) {
+  this.style.opacity = 0.2;
+  dragged_card = this;
+  dragged_holder = this.parentNode;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('source', this);
+}
+function handleDragEnd(e) {
+  this.style.opacity = 1;
+  [].forEach.call(holders, function(holder){
+    holder.classList.remove('over');
+  })
+}
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault(); 
+  }
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
+function handleDragEnter(e) {
+  this.classList.add('over');
+}
+function handleDragLeave(e) {
+  this.classList.remove('over');  
+}
+function handleDrop(e) {
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+  if (dragged_holder !== this) {
+    this.appendChild(dragged_card);
+  }
+  return false;
 }
 
 /* Basic texas holdem game */
@@ -401,66 +446,79 @@ function th4(g) {
 
 /* Create and run game */
 let game = th0();
-let player = '';
+let player = '-1';
 document.getElementById('step1').addEventListener('click', function(){
   th1(game);
+  addDraggableEvents();
   socket.emit('move','1');
 })
 document.getElementById('step2').addEventListener('click', function(){
   th2(game);
+  addDraggableEvents();
   socket.emit('move','2');
   document.getElementById('step3').disabled = false;
 })
 document.getElementById('step3').addEventListener('click', function(){
   th3(game);
+  addDraggableEvents();
   socket.emit('move','3');
   document.getElementById('step4').disabled = false;
 })
 document.getElementById('step4').addEventListener('click', function(){
   th4(game);
+  addDraggableEvents();
   socket.emit('move','4');
   document.getElementById('step1').disabled = false;
 })
 document.getElementById('blue-select').addEventListener('click', function(){
   player = '0';
-  [].forEach.call(
-    document.getElementsByClassName('player-select'),
-    function(e){
-      e.disabled = true;
-    }
-  )
+  disablePlayerSelect();
 })
 document.getElementById('red-select').addEventListener('click', function(){
   player = '1';
-  [].forEach.call(
-    document.getElementsByClassName('player-select'),
-    function(e){
-      e.disabled = true;
-    }
-  )
+  disablePlayerSelect();
 })
 document.getElementById('green-select').addEventListener('click', function(){
   player = '2';
-  [].forEach.call(
-    document.getElementsByClassName('player-select'),
-    function(e){
-      e.disabled = true;
-    }
-  )
+  disablePlayerSelect();
 })
 document.getElementById('yellow-select').addEventListener('click', function(){
   player = '3';
+  disablePlayerSelect();
+});
+
+function disablePlayerSelect() {
   [].forEach.call(
     document.getElementsByClassName('player-select'),
     function(e){
       e.disabled = true;
     }
   )
-})
+}
 
-const socket = io();
+/* Add draggable events to HTML elements */
+function addDraggableEvents() {
+  const cards = document.querySelectorAll('.card');
+  const holders = document.querySelectorAll('.card-holder');
+  [].forEach.call(
+    cards,
+    function(card) {      
+      card.addEventListener('dragstart',handleDragStart,false);
+      card.addEventListener('dragend',handleDragEnd,false);
+  });
+  [].forEach.call(
+    holders,
+    function(holder) {
+      holder.addEventListener('dragover',handleDragOver,false);
+      holder.addEventListener('dragenter',handleDragEnter,false);
+      holder.addEventListener('dragleave',handleDragLeave,false);
+      holder.addEventListener('drop',handleDrop,false);
+  });
+}
 
 /* Listen for moves over the socket */
+const socket = io();
+
 socket.on('move', function(g) {
   /* Move */
   switch(g){
