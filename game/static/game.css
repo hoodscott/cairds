@@ -52,6 +52,7 @@
 }
 .card p {
   margin: 0 0 0 3px;
+  display: table;
 }
 .card-holder.horizontal>.card {
   display:inline-block;

@@ -1,16 +1,27 @@
 
-<button id="step1">Step 1</button>
-<button id="step2" disabled>Step 2</button>
-<button id="step3" disabled>Step 3</button>
-<button id="step4" disabled>Step 4</button>
+<!doctype HTML>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <title>Cairds</title>
+    <link rel="stylesheet" href="game.css"/>
+  </head>
+  <body>
+    <button id="step1">Step 1</button>
+    <button id="step2" disabled>Step 2</button>
+    <button id="step3" disabled>Step 3</button>
+    <button id="step4" disabled>Step 4</button>
 
-<div id="game-holder"></div>
+    <div id="game-holder"></div>
 
-<button id="blue-select" class="player-select">Play As Blue</button>
-<button id="red-select" class="player-select">Play As Red</button>
-<button id="green-select" class="player-select">Play As Green</button>
-<button id="yellow-select" class="player-select">Play As Yellow</button>
+    <button id="blue-select" class="player-select">Play As Blue</button>
+    <button id="red-select" class="player-select">Play As Red</button>
+    <button id="green-select" class="player-select">Play As Green</button>
+    <button id="yellow-select" class="player-select">Play As Yellow</button>
 
-<link rel="stylesheet" href="game.css"/>
-<script src="/socket.io/socket.io.js"></script>
-<script src="game.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game.js"></script>
+    <script src="DragDropTouch.js"></script>
+  </body>
+</html>
