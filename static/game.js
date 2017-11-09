@@ -113,10 +113,9 @@ class Session {
     pile_holder.id = 'pile-holder';
     this.piles.forEach(function(row, i) {
       let pile_row = document.createElement('div');
-      pile_row.id = "pile_row_" + i;
       row.forEach(function(pile, j) {
         if (pile.enabled) {
-          pile_row.appendChild(pile.toHTML());
+          pile_row.appendChild(pile.toHTML(true, 'pile', i, j));
         }
       })
       pile_holder.appendChild(pile_row);
@@ -156,11 +155,11 @@ class Player {
     return this.name + '\n' + s.slice(1);
   }
   toHTML(play_order='') {
-    let holder = false;
+    let owner = false;
     if (this.order == play_order){
-      holder = true;
+      owner = true;
     }
-    return this.hands[0].toHTML(holder);
+    return this.hands[0].toHTML(owner, 'player', this.order, 0);
   }
 }
 
@@ -210,32 +209,33 @@ class Pile {
     }
     return s.substring(1);
   }
-  toHTML(owner = false) {
+  toHTML(owner = false, type = '', row = '', col = '') {
     let card_holder = document.createElement('div');
     card_holder.classList.add("card-holder");
+    if (type !== '') {
+      card_holder.dataset.type = type;
+    }
+    if (row !== '') {
+      card_holder.dataset.row = row;
+    }
+    if (col !== '') {
+      card_holder.dataset.col = col;
+    }
     if (this.stack) {
       card_holder.classList.add('stack');
       if (this.faceup){
         if (this.cards.length !== 0) {
           if (this.secret && !owner){
-            let card = document.createElement('div');
-            card.draggable = "true";
-            card.classList.add('card');
-            card.classList.add('back');
-            card_holder.appendChild(card);
+            card_holder.appendChild(createCardBack(0));
           }
           else {
-            card_holder.appendChild(this.cards[0].toHTML());
+            card_holder.appendChild(this.cards[0].toHTML(0));
           }
         }
       }
       else {
         if (this.cards.length !== 0) {
-          let card = document.createElement('div');
-          card.draggable = "true";
-          card.classList.add('card');
-          card.classList.add('back');
-          card_holder.appendChild(card);
+          card_holder.appendChild(createCardBack(0));
         }
       }
     }
@@ -251,22 +251,14 @@ class Pile {
       this.cards.forEach(function(card, i) {
         if (faceup) {
           if (secret && !owner){
-            let back_card = document.createElement('div');
-            back_card.draggable = "true";
-            back_card.classList.add('card');
-            back_card.classList.add('back');
-            card_holder.appendChild(back_card);
+            card_holder.appendChild(createCardBack(i));
           }
           else {
-            card_holder.appendChild(card.toHTML());
+            card_holder.appendChild(card.toHTML(i));
           }
         }
         else {
-          let card = document.createElement('div');
-          card.draggable = "true";
-          card.classList.add('card');
-          card.classList.add('back');
-          card_holder.appendChild(card);
+          card_holder.appendChild(createCardBack(i));
         }
       })
     }
@@ -287,7 +279,7 @@ class Card {
   toShortString() {
     return this.value + this.suit;
   }
-  toHTML() {
+  toHTML(position) {
     let card = document.createElement('div');
     let el_val =  document.createElement('p');
     el_val.innerHTML = this.value;
@@ -299,6 +291,9 @@ class Card {
     card.classList.add('card');
     card.classList.add(suit_names[suits.indexOf(this.suit)]);
     card.classList.add(this.value);
+    card.dataset.suit = suit_names[suits.indexOf(this.suit)];
+    card.dataset.value = this.value;
+    card.dataset.position = position;
     return card;
   }
 }
@@ -343,21 +338,32 @@ function sortCards(a,b) {
   }
 }
 
+/* Create a card that only shows the back */
+function createCardBack(position) {
+  let card = document.createElement('div');
+  card.draggable = "true";
+  card.classList.add('card');
+  card.classList.add('back');
+  card.dataset.suit = 'back';
+  card.dataset.value = 'back';
+  card.dataset.position = position;
+  return card;
+}
+
 /* Draggable functions */
-const cards = document.querySelectorAll('.card');
-const holders = document.querySelectorAll('.card-holder');
 let dragged_card;
 let dragged_holder;
+let holders;
+let cards;
 function handleDragStart(e) {
   this.style.opacity = 0.2;
   dragged_card = this;
   dragged_holder = this.parentNode;
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('source', this);
 }
 function handleDragEnd(e) {
   this.style.opacity = 1;
-  [].forEach.call(holders, function(holder){
+  [].forEach.call(holders, function(holder) {
     holder.classList.remove('over');
   })
 }
@@ -375,6 +381,8 @@ function handleDragLeave(e) {
   this.classList.remove('over');  
 }
 function handleDrop(e) {
+  //console.log(dragged_holder)
+  //console.log(this);
   if (e.stopPropagation) {
     e.stopPropagation();
   }
@@ -498,8 +506,8 @@ function disablePlayerSelect() {
 
 /* Add draggable events to HTML elements */
 function addDraggableEvents() {
-  const cards = document.querySelectorAll('.card');
-  const holders = document.querySelectorAll('.card-holder');
+  cards = document.querySelectorAll('.card');
+  holders = document.querySelectorAll('.card-holder');
   [].forEach.call(
     cards,
     function(card) {      
