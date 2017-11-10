@@ -403,19 +403,39 @@ function handleDragLeave(e) {
   this.classList.remove('over');  
 }
 function handleDrop(e) {
-  game.moveCard(dragged_holder.dataset.type, dragged_holder.classList.contains('stack'),
-              dragged_holder.dataset.row, dragged_holder.dataset.col,dragged_card.dataset.position,
-              this.dataset.type,this.classList.contains('stack'),
-              this.dataset.row,this.dataset.col,0);
-  game.toHTML(document.getElementById('game-holder'), player_pointer);
-  addDraggableEvents();
-  //todo - emit move
+  /* Create move object on drop */
+  let move = new Object();
+  move.type_from = dragged_holder.dataset.type;
+  move.stack_from = dragged_holder.classList.contains('stack');
+  move.row_from = parseInt(dragged_holder.dataset.row);
+  move.col_from = parseInt(dragged_holder.dataset.col);
+  move.pos_from = parseInt(dragged_card.dataset.position);
+  move.type_to = this.dataset.type;
+  move.stack_to = this.classList.contains('stack');
+  move.row_to = parseInt(this.dataset.row);
+  move.col_to = parseInt(this.dataset.col);
+  move.pos_to = 0;
+  console.log(move);
+  /* Emit move */
+  socket.emit('move',move);
+  /* Reset pointers */
   dragged_card = null;
   dragged_holder = null;
+  /* Stop bubbles */
   if (e.stopPropagation) {
     e.stopPropagation();
   }
   return false;
+}
+
+/* Make passed in move on board, and refresh the GUI */
+function makeMove(move) {
+  game.moveCard(move.type_from, move.stack_from, move.row_from,
+                move.col_from, move.pos_from,
+                move.type_to, move.stack_to, move.row_to,
+                move.col_to, move.pos_to);
+  game.toHTML(document.getElementById('game-holder'), player_pointer);
+  addDraggableEvents();
 }
 
 /* Basic texas holdem game */
@@ -446,8 +466,7 @@ function th1(g) {
   g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step1').disabled = true;
   document.getElementById('step2').disabled = false;
-}
-function th2(g) {
+
   /* Deal 2 cards to each player */
   for (let i = 0; i < 4; i++) {
     g.addtoHandTop(i,0,g.getTopCardFromPile(0,0));
@@ -462,15 +481,13 @@ function th2(g) {
   g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step2').disabled = true;
   document.getElementById('step3').disabled = false;
-}
-function th3(g) {
+  
   /* Flip river */
   g.setPileFaceUp(1,3,true);
   g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step3').disabled = true;
   document.getElementById('step4').disabled = false;
-}
-function th4(g) {
+
   /* Flip turn */
   g.setPileFaceUp(1,4,true);
   g.toHTML(document.getElementById('game-holder'), player_pointer);
@@ -482,25 +499,6 @@ function th4(g) {
 document.getElementById('step1').addEventListener('click', function(){
   th1(game);
   addDraggableEvents();
-  socket.emit('move','1');
-})
-document.getElementById('step2').addEventListener('click', function(){
-  th2(game);
-  addDraggableEvents();
-  socket.emit('move','2');
-  document.getElementById('step3').disabled = false;
-})
-document.getElementById('step3').addEventListener('click', function(){
-  th3(game);
-  addDraggableEvents();
-  socket.emit('move','3');
-  document.getElementById('step4').disabled = false;
-})
-document.getElementById('step4').addEventListener('click', function(){
-  th4(game);
-  addDraggableEvents();
-  socket.emit('move','4');
-  document.getElementById('step1').disabled = false;
 })
 document.getElementById('blue-select').addEventListener('click', function(){
   player_pointer = '0';
@@ -559,21 +557,8 @@ let dragged_card;
 let dragged_holder;
 
 /* Listen for moves over the socket */
-socket.on('move', function(g) {
+socket.on('move', function(move) {
   /* Move */
-  switch(g){
-    case '1':
-      th1(game);
-      break;
-    case '2':
-      th2(game);
-      break;
-    case '3':
-      th3(game);
-      break;
-    case '4':
-      th4(game);
-      break;
-  }
+  makeMove(move);
 });
 

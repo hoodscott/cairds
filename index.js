@@ -17,7 +17,7 @@ io.on('connection', function(socket) {
   socket.on('move', function(obj) {
     /* Emit the message to all connections */
     /* cheat sheet  - https://stackoverflow.com/a/10099325 */
-    socket.broadcast.emit('move', obj);
+    io.emit('move', obj);
     console.log(obj);
   });
   /* Listen for any disconnections */
