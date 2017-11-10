@@ -380,6 +380,7 @@ function handleDragStart(e) {
   dragged_holder = this.parentNode;
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('source', this);
+  e.dataTransfer.setDragImage(this,25,35);
 }
 function handleDragEnd(e) {
   this.style.opacity = 1;
