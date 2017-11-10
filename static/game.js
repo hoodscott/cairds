@@ -27,17 +27,15 @@ class Session {
   }
   /* Get card from a pile  */
   getCardfromPile(row,col,i) {
-    const i = this.piles[row][col].cards.indexOf(card);
-    return this.piles[row][col].cards.splice(i,1);
+    return this.piles[row][col].cards.splice(i,1)[0];
   }
-  getCardFromHand(player,hand,card) {
-    const i = this.players[player].hands[hand].cards.indexOf(card);
-    return this.players[player].hands[hand].cards.splice(i,1);
+  getCardFromHand(player,hand,i) {
+    return this.players[player].hands[hand].cards.splice(i,1)[0];
   }
-  getTopCardfromPile(row,col) {
+  getTopCardFromPile(row,col) {
     return this.piles[row][col].cards.pop();
   }
-  getTopCardfromHand(player,card) {
+  getTopCardfromHand(player,hand) {
     return this.players[player].hands[hand].cards.pop();
   }
   getCardsfromPile(row,col) {
@@ -47,17 +45,23 @@ class Session {
     return this.players[player].hands[hand].cards.splice(0);
   }
   /* Deal one card to group of cards */
-  addtoPile(row,col,card) {
-    this.piles[row][col].cards.push(card);
+  addToPile(row,col,i,card) {
+    this.piles[row][col].cards.splice(i,0,card);
   }
-  addtoHand(player,hand,card) {
-    this.players[player].hands[hand].cards.push(card);
+  addToHand(player,hand,i,card) {
+    this.players[player].hands[hand].cards.splice(i,0,card);
   }
-  addtoPileBottom(row,col,card) {
+  addtoPileTop(row,col,card) {
     this.piles[row][col].cards.unshift(card);
   }
-  addtoHandBottom(player,hand,card) {
+  addtoHandTop(player,hand,card) {
     this.players[player].hands[hand].cards.unshift(card);
+  }
+  addToPileBottom(row,col,card) {
+    this.piles[row][col].cards.push(card);
+  }
+  addToHandBottom(player,hand,card) {
+    this.players[player].hands[hand].cards.push(card);
   }
   /* Overwrite value with specified cards */
   setPile(row,col,cards = []) {
@@ -86,6 +90,37 @@ class Session {
   }
   sortHand(player,hand) {
     this.players[player].hands[hand].cards.sort(sortCards);
+  }
+  /* Move card from one pile/hand to another */
+  moveCard(type_from,stack_from,row_from,col_from,pos_from,
+            type_to,stack_to,row_to,col_to,pos_to) {
+    let card;
+    /* Get the card we are moving */
+    if (type_from === 'pile') {
+      /* Get top card from stack */
+      if (stack_from) { card = this.getTopCardFromPile(row_from,col_from);}
+      /* Get specific card from pile */
+      else { card = this.getCardFromPile(row_from,col_from,pos_from);}
+    }
+    else {
+      /* Get top card from hand */
+      if (stack_from) { card = this.getTopCardFromHand(row_from,col_from);}
+      /* Get specific card from hand */
+      else { card = this.getCardFromHand(row_from,col_from,pos_from);}
+    }
+    /* Put card in it's place */
+    if (type_to === 'pile') {
+      /* Put on bottom of pile stack */
+      if (stack_to) { this.addToPileBottom(row_to,col_to,card);}
+      /* Put in specific position in pile */
+      else { this.addToPile(row_to,col_to,pos_to,card);}
+    }
+    else {
+      /* Put on bottom of hand stack */
+      if (stack_to) { this.addToHandBottom(row_to,col_to,card);}
+      /* Put in specific position in hand */
+      else { this.addToHand(row_to,col_to,pos_to,card);}
+    }
   }
   /* Return string representation */
   toString() {
@@ -225,18 +260,12 @@ class Pile {
       card_holder.classList.add('stack');
       if (this.faceup){
         if (this.cards.length !== 0) {
-          if (this.secret && !owner){
-            card_holder.appendChild(createCardBack(0));
-          }
-          else {
-            card_holder.appendChild(this.cards[0].toHTML(0));
-          }
+          if (this.secret && !owner){ card_holder.appendChild(createCardBack(0));}
+          else { card_holder.appendChild(this.cards[0].toHTML(0));}
         }
       }
       else {
-        if (this.cards.length !== 0) {
-          card_holder.appendChild(createCardBack(0));
-        }
+        if (this.cards.length !== 0) { card_holder.appendChild(createCardBack(0));}
       }
     }
     else {
@@ -250,16 +279,10 @@ class Pile {
       const secret = this.secret;
       this.cards.forEach(function(card, i) {
         if (faceup) {
-          if (secret && !owner){
-            card_holder.appendChild(createCardBack(i));
-          }
-          else {
-            card_holder.appendChild(card.toHTML(i));
-          }
+          if (secret && !owner){ card_holder.appendChild(createCardBack(i));}
+          else { card_holder.appendChild(card.toHTML(i));}
         }
-        else {
-          card_holder.appendChild(createCardBack(i));
-        }
+        else { card_holder.appendChild(createCardBack(i));}
       })
     }
     return card_holder;
@@ -351,18 +374,16 @@ function createCardBack(position) {
 }
 
 /* Draggable functions */
-let dragged_card;
-let dragged_holder;
-let holders;
-let cards;
 function handleDragStart(e) {
   this.style.opacity = 0.2;
   dragged_card = this;
   dragged_holder = this.parentNode;
   e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('source', this);
 }
 function handleDragEnd(e) {
   this.style.opacity = 1;
+  let holders = document.querySelectorAll('.card-holder');
   [].forEach.call(holders, function(holder) {
     holder.classList.remove('over');
   })
@@ -381,13 +402,17 @@ function handleDragLeave(e) {
   this.classList.remove('over');  
 }
 function handleDrop(e) {
-  //console.log(dragged_holder)
-  //console.log(this);
+  game.moveCard(dragged_holder.dataset.type, dragged_holder.classList.contains('stack'),
+              dragged_holder.dataset.row, dragged_holder.dataset.col,dragged_card.dataset.position,
+              this.dataset.type,this.classList.contains('stack'),
+              this.dataset.row,this.dataset.col,0);
+  game.toHTML(document.getElementById('game-holder'), player_pointer);
+  addDraggableEvents();
+  //todo - emit move
+  dragged_card = null;
+  dragged_holder = null;
   if (e.stopPropagation) {
     e.stopPropagation();
-  }
-  if (dragged_holder !== this) {
-    this.appendChild(dragged_card);
   }
   return false;
 }
@@ -417,44 +442,42 @@ function th1(g) {
   for (let i = 0; i < 4; i++) {
     g.setHand(i,0,[]);
   }
-  g.toHTML(document.getElementById('game-holder'), player);
+  g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step1').disabled = true;
   document.getElementById('step2').disabled = false;
 }
 function th2(g) {
   /* Deal 2 cards to each player */
   for (let i = 0; i < 4; i++) {
-    g.addtoHand(i,0,g.getTopCardfromPile(0,0));
+    g.addtoHandTop(i,0,g.getTopCardFromPile(0,0));
   }
   for (let i = 0; i < 4; i++) {
-    g.addtoHand(i,0,g.getTopCardfromPile(0,0));
+    g.addtoHandTop(i,0,g.getTopCardFromPile(0,0));
   }
   /* Deal 5 cards to table */
   for (let i = 0; i < 5; i++) {
-    g.addtoPile(1,i,g.getTopCardfromPile(0,0));
+    g.addtoPileTop(1,i,g.getTopCardFromPile(0,0));
   }
-  g.toHTML(document.getElementById('game-holder'), player);
+  g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step2').disabled = true;
   document.getElementById('step3').disabled = false;
 }
 function th3(g) {
   /* Flip river */
   g.setPileFaceUp(1,3,true);
-  g.toHTML(document.getElementById('game-holder'), player);
+  g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step3').disabled = true;
   document.getElementById('step4').disabled = false;
 }
 function th4(g) {
   /* Flip turn */
   g.setPileFaceUp(1,4,true);
-  g.toHTML(document.getElementById('game-holder'), player);
+  g.toHTML(document.getElementById('game-holder'), player_pointer);
   document.getElementById('step4').disabled = true;
   document.getElementById('step1').disabled = false;
 }
 
 /* Create and run game */
-let game = th0();
-let player = '-1';
 document.getElementById('step1').addEventListener('click', function(){
   th1(game);
   addDraggableEvents();
@@ -479,19 +502,19 @@ document.getElementById('step4').addEventListener('click', function(){
   document.getElementById('step1').disabled = false;
 })
 document.getElementById('blue-select').addEventListener('click', function(){
-  player = '0';
+  player_pointer = '0';
   disablePlayerSelect();
 })
 document.getElementById('red-select').addEventListener('click', function(){
-  player = '1';
+  player_pointer = '1';
   disablePlayerSelect();
 })
 document.getElementById('green-select').addEventListener('click', function(){
-  player = '2';
+  player_pointer = '2';
   disablePlayerSelect();
 })
 document.getElementById('yellow-select').addEventListener('click', function(){
-  player = '3';
+  player_pointer = '3';
   disablePlayerSelect();
 });
 
@@ -506,27 +529,35 @@ function disablePlayerSelect() {
 
 /* Add draggable events to HTML elements */
 function addDraggableEvents() {
-  cards = document.querySelectorAll('.card');
-  holders = document.querySelectorAll('.card-holder');
   [].forEach.call(
-    cards,
+    document.querySelectorAll('.card'),
     function(card) {      
       card.addEventListener('dragstart',handleDragStart,false);
       card.addEventListener('dragend',handleDragEnd,false);
   });
   [].forEach.call(
-    holders,
+    document.querySelectorAll('.card-holder'),
     function(holder) {
       holder.addEventListener('dragover',handleDragOver,false);
       holder.addEventListener('dragenter',handleDragEnter,false);
       holder.addEventListener('dragleave',handleDragLeave,false);
       holder.addEventListener('drop',handleDrop,false);
+      holder.addEventListener('dragstart',function(e) {
+        if (e.target === this) {
+          e.preventDefault();
+          return false}
+      },false);
   });
 }
 
-/* Listen for moves over the socket */
+/* Globals */
+let game = th0();
+let player_pointer = '-1';
 const socket = io();
+let dragged_card;
+let dragged_holder;
 
+/* Listen for moves over the socket */
 socket.on('move', function(g) {
   /* Move */
   switch(g){
