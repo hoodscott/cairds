@@ -1,10 +1,10 @@
 # cairds
 
-Card 'game' using websockets and HTML5 draggable.
+Multiplayer card 'game' using websockets and HTML5 draggable.
 
-No game logic included; Intended to replicate the functionality of a deck of cards.
+No game logic included; intended to replicate the functionality of a deck of cards.
 
-## To Run
+## to run
 Clone repository, then run the following commands:
 
 ```
