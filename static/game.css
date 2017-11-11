@@ -65,7 +65,7 @@
   display: inline-block;
   vertical-align: top;
   height: auto;
-  min-height: 70px;
+  min-height: 71px;
   width: 40px;
 }
 .card-holder.vertical>.card:not(:first-child) {

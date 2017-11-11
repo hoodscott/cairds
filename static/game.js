@@ -6,7 +6,7 @@ const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King'];
 
 /* Holds the game and state */
-class Session {
+class Game {
   constructor(player_names, hand_params = [], pile_params = [[]]) {
     /* Array of players */
     let player_arr = [];
@@ -17,9 +17,9 @@ class Session {
 
     /* 4x13 Array of card piles */
     this.piles = [];
-    for (let i = 0;i < 4; i++) {
+    for (let i = 0;i  < 4; i++) {
       let row = [];
-      for (let j = 0;j < 13; j++) {
+      for (let j = 0; j < 13; j++) {
         row.push(new Pile(...pile_params[i][j]));
       }
       this.piles.push(row);
@@ -43,6 +43,12 @@ class Session {
   }
   getCardsfromHand(player,hand) {
     return this.players[player].hands[hand].cards.splice(0);
+  }
+  copyCardsfromPile(row,col) {
+    return this.piles[row][col].cards.slice(0);
+  }
+  copyCardsfromHand(player,hand) {
+    return this.players[player].hands[hand].cards.slice(0);
   }
   /* Deal one card to group of cards */
   addToPile(row,col,i,card) {
@@ -290,7 +296,7 @@ class Pile {
 }
 
 class Card {
-  constructor(suit,value) {
+  constructor(suit, value) {
     /* S - Spades, C - Clubs, D - Diamonds, H - Hearts */
     this.suit = suit;
     /* A - Ace, J - Jack, Q - Queen, K - King, 2-10 - 2 through 10 */
@@ -415,7 +421,6 @@ function handleDrop(e) {
   move.row_to = parseInt(this.dataset.row);
   move.col_to = parseInt(this.dataset.col);
   move.pos_to = 0;
-  console.log(move);
   /* Emit move */
   socket.emit('move',move);
   /* Reset pointers */
@@ -434,96 +439,120 @@ function makeMove(move) {
                 move.col_from, move.pos_from,
                 move.type_to, move.stack_to, move.row_to,
                 move.col_to, move.pos_to);
-  game.toHTML(document.getElementById('game-holder'), player_pointer);
-  addDraggableEvents();
+  /* Draw game */
+  drawGame();
+}
+/* Reset board */
+function resetGame() {
+    /* Clear piles */
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 13; j++) {
+        game.setPile(i,j,[]);
+      }
+    }
+    /* Clear hands */
+    for (let i = 0; i < 4; i++) {
+      game.setHand(i,0,[]);
+    }
+  /* Create deck */
+  game.setPile(0,0,createFullDeck());
+  /* Draw game */
+  drawGame();
+}
+/* Set cards to piles */
+function setCards(move) {
+  if (move.type === 'pile') {
+    game.setPile(move.row, move.col, move.cards)
+  }
+  else if (move.type === 'player') {
+    game.setHand(move.row, move.col, move.cards)
+  }
+  /* Draw game */
+  drawGame();
+}
+/* Flip deck */
+function flipCards(move) {
+  if (move.type === 'pile') {
+    game.setPileFaceUp(move.row, move.col, move.faceup);
+  }
+  else if (move.type === 'player') {
+    game.setHandFaceUp(move.row, move.col, move.faceup);
+  }
+  /* Draw game */
+  drawGame();
 }
 
-/* Basic texas holdem game */
-function th0() {
+/* Initialise basic texas holdem game */
+function initialiseGame() {
   const player_names = ['Alice','Bob','Charlie','Dave'];
   const hand_params = [[true,true,false,true]];
   const pile_params = [[[true,false,true],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[true,true,true],[true,true,true],[true,true,true],[true,false,true],[true,false,true],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
-  return new Session(player_names,hand_params,pile_params);
-}
-function th1(g) {
-  /* Create and shuffle deck */
-  g.setPile(0,0,createFullDeck());
-  g.shufflePile(0,0);
-  /* Clear piles */
-  for (let i = 0; i < 5; i++) {
-    g.setPile(1,i,[]);
-    if (i > 2) {
-      g.setPileFaceUp(1,i,false);
-    }
-  }
-  /* Clear hands */
-  for (let i = 0; i < 4; i++) {
-    g.setHand(i,0,[]);
-  }
-  g.toHTML(document.getElementById('game-holder'), player_pointer);
-  document.getElementById('step1').disabled = true;
-  document.getElementById('step2').disabled = false;
-
-  /* Deal 2 cards to each player */
-  for (let i = 0; i < 4; i++) {
-    g.addtoHandTop(i,0,g.getTopCardFromPile(0,0));
-  }
-  for (let i = 0; i < 4; i++) {
-    g.addtoHandTop(i,0,g.getTopCardFromPile(0,0));
-  }
-  /* Deal 5 cards to table */
-  for (let i = 0; i < 5; i++) {
-    g.addtoPileTop(1,i,g.getTopCardFromPile(0,0));
-  }
-  g.toHTML(document.getElementById('game-holder'), player_pointer);
-  document.getElementById('step2').disabled = true;
-  document.getElementById('step3').disabled = false;
-  
-  /* Flip river */
-  g.setPileFaceUp(1,3,true);
-  g.toHTML(document.getElementById('game-holder'), player_pointer);
-  document.getElementById('step3').disabled = true;
-  document.getElementById('step4').disabled = false;
-
-  /* Flip turn */
-  g.setPileFaceUp(1,4,true);
-  g.toHTML(document.getElementById('game-holder'), player_pointer);
-  document.getElementById('step4').disabled = true;
-  document.getElementById('step1').disabled = false;
+  return new Game(player_names,hand_params,pile_params);
 }
 
-/* Create and run game */
-document.getElementById('step1').addEventListener('click', function(){
-  th1(game);
-  addDraggableEvents();
+/* Move making button event listeners */
+document.getElementById('reset').addEventListener('click', function(){
+  socket.emit('reset');
 })
+document.getElementById('shuffle').addEventListener('click', function(){
+  /* Get cards from this pile */
+  let cards = game.copyCardsfromPile(0,0);
+  /* Shuffle */
+  cards.fy_shuffle();
+  /* Create move object */
+  let move = new Object();
+  move.type = 'pile';
+  move.row = 0;
+  move.col = 0;
+  move.cards = cards;
+  /* Emit move */
+  socket.emit('set', move);
+})
+document.getElementById('flip1').addEventListener('click', function(){
+  /* Create move object */
+  let move = new Object();
+  move.type = 'pile';
+  move.row = 1;
+  move.col = 3;
+  move.faceup = true;
+  /* Emit move */
+  socket.emit('flip', move);
+})
+document.getElementById('flip2').addEventListener('click', function(){
+  /* Create move object */
+  let move = new Object();
+  move.type = 'pile';
+  move.row = 1;
+  move.col = 4;
+  move.faceup = true;
+  /* Emit move */
+  socket.emit('flip', move);
+})
+
+/* Select player event listeners */
 document.getElementById('blue-select').addEventListener('click', function(){
   player_pointer = '0';
-  disablePlayerSelect();
+  drawGame();
 })
 document.getElementById('red-select').addEventListener('click', function(){
   player_pointer = '1';
-  disablePlayerSelect();
+  drawGame();
 })
 document.getElementById('green-select').addEventListener('click', function(){
   player_pointer = '2';
-  disablePlayerSelect();
+  drawGame();
 })
 document.getElementById('yellow-select').addEventListener('click', function(){
   player_pointer = '3';
-  disablePlayerSelect();
+  drawGame();
 });
 
-function disablePlayerSelect() {
-  [].forEach.call(
-    document.getElementsByClassName('player-select'),
-    function(e){
-      e.disabled = true;
-    }
-  )
+function drawGame() {
+  game.toHTML(document.getElementById('game-holder'), player_pointer);
+  addDraggableEvents();
 }
 
 /* Add draggable events to HTML elements */
@@ -544,21 +573,35 @@ function addDraggableEvents() {
       holder.addEventListener('dragstart',function(e) {
         if (e.target === this) {
           e.preventDefault();
-          return false}
+          return false;
+        }
       },false);
   });
 }
 
-/* Globals */
-let game = th0();
-let player_pointer = '-1';
-const socket = io();
-let dragged_card;
-let dragged_holder;
-
 /* Listen for moves over the socket */
+const socket = io();
 socket.on('move', function(move) {
-  /* Move */
   makeMove(move);
 });
+socket.on('reset', function() {
+  resetGame();
+});
+socket.on('set', function(move) {
+  /* Convert back to objects */
+  move.cards.forEach(function(card, i, arr) {
+    arr[i] = new Card(card.suit, card.value);
+  });
+  setCards(move);
+});
+socket.on('flip', function(move) {
+  flipCards(move);
+});
 
+/* Globals */
+let dragged_card;
+let dragged_holder;
+let game = initialiseGame();
+let player_pointer = '-1';
+
+drawGame();
