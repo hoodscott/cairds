@@ -6,12 +6,14 @@ function makeMove(move) {
                 move.col_to, move.pos_to);
   /* Draw game */
   drawGame();
+  /* Draw borders around last move */
   document.querySelector(
     '[data-type="' + move.type_from + '"][data-row="' + move.row_from + '"][data-col="' + move.col_from + '"]')
     .classList.add('player-from-' + move.player);
   document.querySelector(
     '[data-type="' + move.type_to + '"][data-row="' + move.row_to + '"][data-col="' + move.col_to + '"]')
     .classList.add('player-' + move.player);
+  clearControlBorders();
 }
 /* Reset board */
 function resetGame() {
@@ -53,6 +55,10 @@ function sortCards(move) {
 }
 /* Set cards to piles */
 function setCards(move) {
+  /* Convert back to objects */
+  move.cards.forEach(function(card, i, arr) {
+    arr[i] = new Card(card.suit, card.value);
+  });
   if (move.type === 'pile') {
     game.setPile(move.row, move.col, move.cards)
   }

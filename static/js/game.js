@@ -31,17 +31,34 @@ let player_pointer = '-1';
 
 /* Listen for moves over the socket */
 const socket = io();
-socket.on('move', function(move) {
-  makeMove(move);
+socket.on('init', function(moves) {
+  moves.forEach(function(move) {
+    switch(move[0]) {
+      case 'reset':
+        resetGame();
+        break;
+      case 'move':
+        makeMove(move[1]);
+        break;
+      case 'set':
+        setCards(move[1]);
+        break;
+      case 'sort':
+        sortCards(move[1]);
+        break;
+      case 'flip':
+        flipCards(move[1]);
+        break;
+    }
+  });
 });
 socket.on('reset', function() {
   resetGame();
 });
+socket.on('move', function(move) {
+  makeMove(move);
+});
 socket.on('set', function(move) {
-  /* Convert back to objects */
-  move.cards.forEach(function(card, i, arr) {
-    arr[i] = new Card(card.suit, card.value);
-  });
   setCards(move);
 });
 socket.on('sort', function(move) {
