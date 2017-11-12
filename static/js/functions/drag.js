@@ -22,10 +22,27 @@ function handleDragOver(e) {
   return false;
 }
 function handleDragEnter(e) {
-  this.classList.add('over');
+  /* Ignore next leave if moving into child element */
+  dragged_ignorenext = e.target !== this;
+  /* Add effect if over a different holder */
+  if (dragged_holder !== this) {
+    this.classList.add('over');
+  }
 }
 function handleDragLeave(e) {
-  this.classList.remove('over');  
+  /* If moving to new holder, remove effect from this */
+  if (dragged_ignorenext) {
+    dragged_ignorenext = false;
+  }
+  else {
+    this.classList.remove('over');
+  }
+}
+function handleCardDragEnter(e) {
+  e.stopPropagation();
+}
+function handleCardDragLeave(e) {
+  e.stopPropagation();
 }
 function handleDrop(e) {
   /* Create move object on drop */
@@ -97,6 +114,7 @@ function handleDrop(e) {
   /* Reset pointers */
   dragged_card = null;
   dragged_holder = null;
+  dragged_counter = 0;
   /* Stop bubbles */
   if (e.stopPropagation) {
     e.stopPropagation();

@@ -23,6 +23,8 @@ const value_names = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','
 /* Draggable globals */
 let dragged_card;
 let dragged_holder;
+let dragged_counter = 0;
+let dragged_ignorenext = false;
 /* Game globals */
 let game = initialiseGame();
 let player_pointer = '-1';

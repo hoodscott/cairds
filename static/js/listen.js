@@ -21,14 +21,15 @@ function addDraggableEvents() {
     function(card) {      
       card.addEventListener('dragstart',handleDragStart,false);
       card.addEventListener('dragend',handleDragEnd,false);
+      card.addEventListener('dragleave',handleCardDragLeave,false);
     }
   );
   [].forEach.call(
     document.querySelectorAll('.card-holder'),
     function(holder) {
       holder.addEventListener('dragover',handleDragOver,false);
-      holder.addEventListener('dragenter',handleDragEnter,false);
       holder.addEventListener('dragleave',handleDragLeave,false);
+      holder.addEventListener('dragenter',handleDragEnter,false);
       holder.addEventListener('drop',handleDrop,false);
       holder.addEventListener('dragstart',function(e) {
         if (e.target === this) {
