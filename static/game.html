@@ -10,13 +10,12 @@
   <body>
     <div id="control-buttons">
       <button id="reset">reset</button>
-      <button id="blue-select" class="player-select">blue</button>
-      <button id="red-select" class="player-select">red</button>
-      <button id="green-select" class="player-select">green</button>
-      <button id="yellow-select" class="player-select">yellow</button>
-    </div>
-
-    <div class="card-holder stack" data-type="shuffle">shuffle</div><!-- 
+      <button class="player-select" data-player=0>blue</button>
+      <button class="player-select" data-player=1>red</button>
+      <button class="player-select" data-player=2>green</button>
+      <button class="player-select" data-player=3>yellow</button>
+    </div><!--
+    --><div class="card-holder stack" data-type="shuffle">shuffle</div><!-- 
       inline blocks treat the tabs as spaces
     --><div class="card-holder stack" data-type="sort">sort</div><!--
       need to comment out any whitespace between them

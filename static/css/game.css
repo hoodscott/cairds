@@ -9,15 +9,23 @@ html {
 }
 #control-buttons>button {
   display: block;
+  width: 70px;
+  height: 20px;
+  background-color: lightgrey;
+}
+#control-buttons>button:hover,
+#control-buttons>button:focus {
+  background-color: white;
 }
 .card-holder {
   padding:15px;
   height:100px;
   position:relative;
   box-shadow:0px 0px 0px 1px black inset;
+  background: #f8f8f8;
 }
 .card-holder.over {
-  background-color:grey;
+  filter: invert(20%);
 }
 .card-holder.horizontal>.card {
   display: inline-block;

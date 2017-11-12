@@ -49,5 +49,5 @@ socket.on('flip', function(move) {
   flipCards(move);
 });
 
-/* Globals */
+addPlayerListeners();
 drawGame();
