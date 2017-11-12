@@ -31,7 +31,7 @@ html {
   display: inline-block;
 }
 .card-holder.horizontal>.card:not(:first-child) {
-  margin-left: -1.2em;
+  margin-left: -15px;
 }
 .card-holder.vertical,
 .card-holder.stack {
@@ -42,7 +42,7 @@ html {
   width: 70px;
 }
 .card-holder.vertical>.card:not(:first-child) {
-  margin-top: -2.5em;
+  margin-top: -40px;
 }
 .card{
   height:70px;

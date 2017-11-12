@@ -1,9 +1,9 @@
 class Pile {
-  constructor(enable = false, faceup = false, stack = false, secret=false) {
+  constructor(enable = false, faceup = false, stack = false, secret=false, size=5, vertical=false) {
     /* Should this pile be displayed */
     this.enabled = enable;
     /* Minimum - Maximum number of cards allowed in this pile */
-    this.size = "0-52";
+    this.size = size;
     /* Can everyone see the cards in this pile */
     this.faceup = faceup;
     /* Can only the first card be interacted with / viewed */
@@ -12,7 +12,7 @@ class Pile {
     this.secret = secret;
     /* Should the cards be overlaid vertically or horizontally 
      * When stack is true, this is overridden */
-    this.vertical = false;
+    this.vertical = vertical;
     /* Can players take cards from this pile */
     this.draw = true;
     /* Can players place cards in this pile */
@@ -71,9 +71,11 @@ class Pile {
     else {
       if (this.vertical) {
         card_holder.classList.add("vertical");
+        card_holder.style.height = 70 + (30 * this.size) + 'px';
       }
       else {
         card_holder.classList.add("horizontal");
+        card_holder.style.width = 45 + (25 * this.size) + 'px';
       }
       const faceup = this.faceup;
       const secret = this.secret;

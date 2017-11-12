@@ -102,6 +102,4 @@ function clearControlBorders() {
     document.querySelector('[data-type="' + e + '"]').className = 
     document.querySelector('[data-type="' + e + '"]').className.replace(/player\-*[0-9]*/, '')
   });
-  
-
 }
