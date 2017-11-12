@@ -76,6 +76,12 @@ class Game {
   setHandFaceUp(player,hand,faceup) {
     this.players[player].hands[hand].faceup = faceup;
   }
+  flipPile(row,col) {
+    this.piles[row][col].faceup = !this.piles[row][col].faceup;
+  }
+  flipHand(player,hand) {
+    this.players[player].hands[hand].faceup = !this.players[player].hands[hand].faceup;
+  }
   /* Shuffle specified cards */
   shufflePile(row,col) {
     this.piles[row][col].cards.fy_shuffle();
@@ -85,10 +91,10 @@ class Game {
   }
   /* Sort specified cards */
   sortPile(row,col) {
-    this.piles[row][col].cards.sort(sortCards);
+    this.piles[row][col].cards.sort(cardSort);
   }
   sortHand(player,hand) {
-    this.players[player].hands[hand].cards.sort(sortCards);
+    this.players[player].hands[hand].cards.sort(cardSort);
   }
   /* Move card from one pile/hand to another */
   moveCard(type_from,stack_from,row_from,col_from,pos_from,

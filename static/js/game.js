@@ -42,6 +42,9 @@ socket.on('set', function(move) {
   });
   setCards(move);
 });
+socket.on('sort', function(move) {
+  sortCards(move);
+});
 socket.on('flip', function(move) {
   flipCards(move);
 });

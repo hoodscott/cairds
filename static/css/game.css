@@ -22,8 +22,8 @@
   height:70px;
   width:40px;
   border-radius:4px;
-  transition: all 0.3s ease-in-out;
-  transition-property: transform, opacity;
+  transition: transform 0.3s ease-in-out,
+              opacity 0.1s ease-in;
   box-shadow: 1px 1px 1px #666;
   -moz-box-shadow: 1px 1px 1px #666;
   -webkit-box-shadow: 1px 1px 1px #222;

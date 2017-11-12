@@ -2,41 +2,6 @@
 document.getElementById('reset').addEventListener('click', function(){
   socket.emit('reset');
 })
-document.getElementById('shuffle').addEventListener('click', function(){
-  /* Get cards from this pile */
-  let cards = game.copyCardsfromPile(0,0);
-  /* Shuffle */
-  cards.fy_shuffle();
-  /* Create move object */
-  let move = new Object();
-  move.type = 'pile';
-  move.row = 0;
-  move.col = 0;
-  move.cards = cards;
-  /* Emit move */
-  socket.emit('set', move);
-})
-document.getElementById('flip1').addEventListener('click', function(){
-  /* Create move object */
-  let move = new Object();
-  move.type = 'pile';
-  move.row = 1;
-  move.col = 3;
-  move.faceup = true;
-  /* Emit move */
-  socket.emit('flip', move);
-})
-document.getElementById('flip2').addEventListener('click', function(){
-  /* Create move object */
-  let move = new Object();
-  move.type = 'pile';
-  move.row = 1;
-  move.col = 4;
-  move.faceup = true;
-  /* Emit move */
-  socket.emit('flip', move);
-})
-
 /* Select player event listeners */
 document.getElementById('blue-select').addEventListener('click', function(){
   player_pointer = '0';

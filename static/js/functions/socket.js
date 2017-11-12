@@ -24,6 +24,17 @@ function resetGame() {
   /* Draw game */
   drawGame();
 }
+/* Sort specifed cards */
+function sortCards(move) {
+  if (move.type === 'pile') {
+    game.sortPile(move.row, move.col)
+  }
+  else if (move.type === 'player') {
+    game.sortHand(move.row, move.col)
+  }
+  /* Draw game */
+  drawGame();
+}
 /* Set cards to piles */
 function setCards(move) {
   if (move.type === 'pile') {
@@ -38,10 +49,10 @@ function setCards(move) {
 /* Flip deck */
 function flipCards(move) {
   if (move.type === 'pile') {
-    game.setPileFaceUp(move.row, move.col, move.faceup);
+    game.flipPile(move.row, move.col);
   }
   else if (move.type === 'player') {
-    game.setHandFaceUp(move.row, move.col, move.faceup);
+    game.flipHand(move.row, move.col);
   }
   /* Draw game */
   drawGame();

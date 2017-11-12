@@ -34,6 +34,11 @@ io.on('connection', function(socket) {
     /* Emit the message to all connections */
     io.emit('flip', obj);
   });
+  /* Listen for incoming sorts */
+  socket.on('sort', function(obj) {
+    /* Emit the message to all connections */
+    io.emit('sort', obj);
+  });
   /* Listen for any disconnections */
   socket.on('disconnect', function() {
     console.log('user disconnected');

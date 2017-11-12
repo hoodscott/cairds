@@ -11,7 +11,6 @@ function createFullDeck() {
   }
   return deck;
 }
-
 /* Adding Fisher-Yates shuffle to array objects for efficient shuffling */
 Array.prototype.fy_shuffle = function() {
   let end = this.length, temp, i;
@@ -27,9 +26,8 @@ Array.prototype.fy_shuffle = function() {
   }
   return this;
 }
-
 /* Function to define how the cards are to be sorted */
-function sortCards(a,b) {
+function cardSort(a,b) {
   if (a.suit === b.suit) {
     return values.indexOf(a.value) - values.indexOf(b.value);
   }
@@ -37,7 +35,6 @@ function sortCards(a,b) {
     return suits.indexOf(a.suit) - suits.indexOf(b.suit);
   }
 }
-
 /* Create a card that only shows the back */
 function createCardBack(position) {
   let card = document.createElement('div');
