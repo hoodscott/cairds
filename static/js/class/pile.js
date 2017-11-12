@@ -57,16 +57,30 @@ class Pile {
       card_holder.dataset.col = col;
     }
     if (this.stack) {
+      let len = this.cards.length;
+      let count = 0
       card_holder.classList.add('stack');
-      if (this.faceup){
+      if (this.faceup) {
         if (this.cards.length !== 0) {
+          while (len > 1) {
+            card_holder.appendChild(createCardBack(0));
+            count++;
+            len -= 13;
+          }
           if (this.secret && !owner){ card_holder.appendChild(createCardBack(0));}
           else { card_holder.appendChild(this.cards[0].toHTML(0));}
         }
       }
       else {
+        while (len > 1) {
+          card_holder.appendChild(createCardBack(0));
+          count++;
+          len -= 13;
+        }
         if (this.cards.length !== 0) { card_holder.appendChild(createCardBack(0));}
       }
+      card_holder.style.paddingLeft = 15 - count + 'px';
+      card_holder.style.paddingRight = 15 - count + 'px';
     }
     else {
       if (this.vertical) {

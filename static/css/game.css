@@ -27,7 +27,8 @@ html {
 .card-holder.over {
   filter: invert(20%);
 }
-.card-holder.horizontal>.card {
+.card-holder.horizontal>.card,
+.card-holder.stack>.card {
   display: inline-block;
 }
 .card-holder.horizontal>.card:not(:first-child) {
@@ -37,12 +38,14 @@ html {
 .card-holder.stack {
   display: inline-block;
   vertical-align: top;
-  height: auto;
-  min-height: 100px;
+  height: 100px;
   width: 70px;
 }
 .card-holder.vertical>.card:not(:first-child) {
   margin-top: -40px;
+}
+.card-holder.stack>.card:not(:first-child) {
+  margin-left: -38px;
 }
 .card{
   height:70px;
@@ -73,7 +76,9 @@ html {
                     fill='%230074f6' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath \
                     d='M8 0v20L0 10M16 0v10L8 0M16 10v10H8'/%3E%3C/g%3E%3C/svg%3E");
 }
-.card:hover {
+.card-holder.horizontal>.card:hover,
+.card-holder.vertical>.card:hover,
+.card-holder.stack>.card:last-child:hover {
   transform: translate(0,-10px);
 }
 .card p {
