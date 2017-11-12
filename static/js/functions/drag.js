@@ -53,6 +53,7 @@ function handleDrop(e) {
   if ((from === 'pile' || from === 'player')
     && (to === 'pile' || to === 'player')) {
       /* Create move object */
+      move.player = player_pointer;
       move.type_from = from;
       move.stack_from = dragged_holder.classList.contains('stack');
       move.row_from = parseInt(dragged_holder.dataset.row);
@@ -72,6 +73,7 @@ function handleDrop(e) {
       /* Create move object */
       let move = new Object();
       let cards = [];
+      move.player = player_pointer;
       move.type = from;
       move.row = parseInt(dragged_holder.dataset.row);
       move.col= parseInt(dragged_holder.dataset.col);
@@ -94,6 +96,7 @@ function handleDrop(e) {
     && to === 'sort') {
       /* Create move object */
       let move = new Object();
+      move.player = player_pointer;
       move.type = from;
       move.row = parseInt(dragged_holder.dataset.row);
       move.col= parseInt(dragged_holder.dataset.col);
@@ -105,6 +108,7 @@ function handleDrop(e) {
     && to === 'flip') {
       /* Create move object */
       let move = new Object();
+      move.player = player_pointer;
       move.type = from;
       move.row = parseInt(dragged_holder.dataset.row);
       move.col = parseInt(dragged_holder.dataset.col);

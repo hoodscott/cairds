@@ -90,11 +90,41 @@ html {
   background-color: rgb(138, 228, 138);
 }
 #player-holder>.card-holder:nth-child(4){
-  background-color: yellow;
+  background-color: rgb(243, 243, 120);
 }
 svg {
   padding: 4px;
   float: right;
   height: 36px;
   width: auto;
+}
+.player--1 {
+  box-shadow:0px 0px 0px 4px grey inset;
+}
+.player-from--1 {
+  box-shadow:0px 0px 0px 2px grey inset;
+}
+.player-0 {
+  box-shadow:0px 0px 0px 4px blue inset;
+}
+.player-from-0 {
+  box-shadow:0px 0px 0px 2px blue inset;
+}
+.player-1 {
+  box-shadow:0px 0px 0px 4px red inset;
+}
+.player-from-1 {
+  box-shadow:0px 0px 0px 2px red inset;
+}
+.player-2 {
+  box-shadow:0px 0px 0px 4px green inset;
+}
+.player-from-2 {
+  box-shadow:0px 0px 0px 2px green inset;
+}
+.player-3 {
+  box-shadow:0px 0px 0px 4px yellow inset;
+}
+.player-from-3 {
+  box-shadow:0px 0px 0px 2px yellow inset;
 }
