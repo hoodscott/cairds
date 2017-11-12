@@ -26,10 +26,10 @@ class Game {
     return this.players[player].hands[hand].cards.splice(i,1)[0];
   }
   getTopCardFromPile(row,col) {
-    return this.piles[row][col].cards.pop();
+    return this.piles[row][col].cards.shift();
   }
   getTopCardfromHand(player,hand) {
-    return this.players[player].hands[hand].cards.pop();
+    return this.players[player].hands[hand].cards.shift();
   }
   getCardsfromPile(row,col) {
     return this.piles[row][col].cards.splice(0);
@@ -117,14 +117,14 @@ class Game {
     if (type_to === 'pile') {
       /* Put on bottom of pile stack */
       if (stack_to) { this.addToPileBottom(row_to,col_to,card);}
-      /* Put in specific position in pile */
-      else { this.addToPile(row_to,col_to,pos_to,card);}
+      /* Put on bottom of pile stack */
+      else { this.addToPileBottom(row_to,col_to,card);}
     }
     else {
       /* Put on bottom of hand stack */
       if (stack_to) { this.addToHandBottom(row_to,col_to,card);}
-      /* Put in specific position in hand */
-      else { this.addToHand(row_to,col_to,pos_to,card);}
+      /* Put on bottom of hand stack */
+      else { this.addToHandBottom(row_to,col_to,card);}
     }
   }
   /* Return string representation */

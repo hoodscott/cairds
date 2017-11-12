@@ -92,3 +92,9 @@ html {
 #player-holder>.card-holder:nth-child(4){
   background-color: yellow;
 }
+svg {
+  padding: 4px;
+  float: right;
+  height: 36px;
+  width: auto;
+}
