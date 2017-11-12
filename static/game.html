@@ -8,7 +8,7 @@
     <link href="css/game.css" rel="stylesheet"/>
   </head>
   <body>
-    <div>
+    <div id="control-buttons">
       <button id="reset">reset</button>
       <button id="blue-select" class="player-select">blue</button>
       <button id="red-select" class="player-select">red</button>
@@ -16,10 +16,12 @@
       <button id="yellow-select" class="player-select">yellow</button>
     </div>
 
-    <div class="card-holder stack" data-type="shuffle">shuffle</div>
-    <div class="card-holder stack" data-type="sort">sort</div>
-    <div class="card-holder stack" data-type="flip">flip</div>
-
+    <div class="card-holder stack" data-type="shuffle">shuffle</div><!-- 
+      inline blocks treat the tabs as spaces
+    --><div class="card-holder stack" data-type="sort">sort</div><!--
+      need to comment out any whitespace between them
+    --><div class="card-holder stack" data-type="flip">flip</div>
+    
     <div id="game-holder"></div>
 
     <script src="/socket.io/socket.io.js"></script>
