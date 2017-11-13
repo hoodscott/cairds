@@ -1,5 +1,5 @@
 class Pile {
-  constructor(enable = false, faceup = false, stack = false, secret=false, size=5, vertical=false) {
+  constructor(enable = false, faceup = false, stack = false, vertical = false, secret = false, size = 5) {
     /* Should this pile be displayed */
     this.enabled = enable;
     /* Minimum - Maximum number of cards allowed in this pile */

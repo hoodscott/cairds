@@ -1,9 +1,9 @@
 /* Initialise basic texas holdem game */
 function initialiseGame() {
   const player_names = ['Alice','Bob','Charlie','Dave'];
-  const hand_params = [[true,true,false,true]];
-  const pile_params = [[[true,false,true],[],[],[],[],[],[],[],[],[],[],[],[]],
-                       [[true,true,true],[true,true,true],[true,true,true],[true,false,true],[true,false,true],[],[],[],[],[],[],[],[]],
+  const hand_params = [[true,true,false,false,true]];
+  const pile_params = [[[true,false,true,false,52],[],[],[],[],[],[],[],[],[],[],[],[]],
+                       [[true,true,true,false],[true,true,true,false],[true,true,true,false],[true,false,true,false],[true,false,true,false],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
   return new Game(player_names,hand_params,pile_params);
