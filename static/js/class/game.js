@@ -5,12 +5,12 @@ class Game {
     let player_arr = [];
     player_names.forEach(function(p,i) {
       player_arr.push(new Player(p,i,hand_params));
-    })
+    });
     this.players = player_arr;  
 
     /* 4x13 Array of card piles */
     this.piles = [];
-    for (let i = 0;i  < 4; i++) {
+    for (let i = 0;i < 4; i++) {
       let row = [];
       for (let j = 0; j < 13; j++) {
         row.push(new Pile(...pile_params[i][j]));

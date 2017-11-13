@@ -2,11 +2,16 @@
 function initialiseGame() {
   const player_names = ['Alice','Bob','Charlie','Dave'];
   const hand_params = [[true,true,false,false,true]];
-  const pile_params = [[[true,false,true,false,52],[],[],[],[],[],[],[],[],[],[],[],[]],
+  const pile_params = [[[true,false,true,false,false,52],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[true,true,true,false],[true,true,true,false],[true,true,true,false],[true,false,true,false],[true,false,true,false],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
-  return new Game(player_names,hand_params,pile_params);
+  console.log(validatePileParams(pile_params));               
+  if (validatePlayerParams(hand_params)
+    && validatePileParams(pile_params)) {
+      return new Game(player_names,hand_params,pile_params);
+  }
+  console.error('Invalid parameters');
 }
 /* Draw game as HTML */
 function drawGame() {
@@ -26,11 +31,13 @@ let dragged_holder;
 let dragged_counter = 0;
 let dragged_ignorenext = false;
 /* Game globals */
-let game = initialiseGame();
-let player_pointer = '-1';
-
-/* Listen for moves over the socket */
+let game;
+let player_pointer;
 const socket = io();
+/* Initialise */
+game = initialiseGame();
+player_pointer = '-1';
+/* Listen for moves over the socket */
 socket.on('init', function(moves) {
   moves.forEach(function(move) {
     switch(move[0]) {
@@ -67,6 +74,6 @@ socket.on('sort', function(move) {
 socket.on('flip', function(move) {
   flipCards(move);
 });
-
+/* Draw game */
 addPlayerListeners();
 drawGame();
