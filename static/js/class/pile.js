@@ -56,6 +56,7 @@ class Pile {
     if (col !== '') {
       card_holder.dataset.col = col;
     }
+    card_holder.dataset.spaces = this.size - this.cards.length;
     if (this.stack) {
       let len = this.cards.length;
       let count = 0

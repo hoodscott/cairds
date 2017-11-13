@@ -52,47 +52,53 @@ function handleDrop(e) {
   /* Emit move */
   if ((from === 'pile' || from === 'player')
     && (to === 'pile' || to === 'player')) {
-      /* Create move object */
-      move.player = player_pointer;
-      move.type_from = from;
-      move.stack_from = dragged_holder.classList.contains('stack');
-      move.row_from = parseInt(dragged_holder.dataset.row);
-      move.col_from = parseInt(dragged_holder.dataset.col);
-      move.pos_from = parseInt(dragged_card.dataset.position);
-      move.type_to = to;
-      move.stack_to = this.classList.contains('stack');
-      move.row_to = parseInt(this.dataset.row);
-      move.col_to = parseInt(this.dataset.col);
-      move.pos_to = 0;
-      /* Send over socket */
-      socket.emit('move',move);
+      /* Check there is space to move the card to */
+      if (parseInt(this.dataset.spaces) !== 0) {
+        /* Create move object */
+        move.player = player_pointer;
+        move.type_from = from;
+        move.stack_from = dragged_holder.classList.contains('stack');
+        move.row_from = parseInt(dragged_holder.dataset.row);
+        move.col_from = parseInt(dragged_holder.dataset.col);
+        move.pos_from = parseInt(dragged_card.dataset.position);
+        move.type_to = to;
+        move.stack_to = this.classList.contains('stack');
+        move.row_to = parseInt(this.dataset.row);
+        move.col_to = parseInt(this.dataset.col);
+        move.pos_to = 0;
+        /* Send over socket */
+        socket.emit('move',move);
+      }
   }
   /* Emit shuffle */
   else if ((from === 'pile' || from === 'player')
     && to === 'shuffle') {
-      /* Create move object */
-      let move = new Object();
-      let cards = [];
-      move.player = player_pointer;
-      move.type = from;
-      move.row = parseInt(dragged_holder.dataset.row);
-      move.col= parseInt(dragged_holder.dataset.col);
-      if (move.type === 'pile') {
-        /* Get cards from this pile */
-        cards = game.copyCardsfromPile(move.row,move.col);
+      /* Check there is space to move the card to */
+      if (parseInt(this.dataset.spaces) !== 0) {
+        /* Create move object */
+        let move = new Object();
+        let cards = [];
+        move.player = player_pointer;
+        move.type = from;
+        move.row = parseInt(dragged_holder.dataset.row);
+        move.col= parseInt(dragged_holder.dataset.col);
+        if (move.type === 'pile') {
+          /* Get cards from this pile */
+          cards = game.copyCardsfromPile(move.row,move.col);
+        }
+        else {
+          /* Get cards from this hand */
+          cards = game.copyCardsfromHand(move.row,move.col);
+        }
+        /* Shuffle */
+        cards.fy_shuffle();
+        move.cards = cards;
+        /* Send over socket */
+        socket.emit('set', move);
       }
-      else {
-        /* Get cards from this hand */
-        cards = game.copyCardsfromHand(move.row,move.col);
-      }
-      /* Shuffle */
-      cards.fy_shuffle();
-      move.cards = cards;
-      /* Send over socket */
-      socket.emit('set', move);
   }
-    /* Emit shuffle */
-    else if ((from === 'pile' || from === 'player')
+  /* Emit shuffle */
+  else if ((from === 'pile' || from === 'player')
     && to === 'sort') {
       /* Create move object */
       let move = new Object();
