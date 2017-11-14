@@ -16,6 +16,10 @@ body {
                     linear-gradient(180deg, transparent 50%, rgba(255,255,255,.08) 50%);
   background-size: 13px, 29px, 37px, 53px;
 }
+input {
+  display: block;
+}
+
 .game-container {
   display: inline-block;
   padding: 10px;
@@ -38,6 +42,8 @@ body {
   display: block;
   width: 70px;
   height: 20px;
+  border:none;
+  box-shadow: 0px 0px 0px 1px black inset;
   background-color: lightgrey;
 }
 #control-buttons>button:hover,

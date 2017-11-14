@@ -4,13 +4,20 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let moves = [];
 
-/* Return the HTML page for requests to / */
+/* Return the index HTML page for requests to / */
 app.get('/', function(req, res) {
+  res.sendFile(__dirname + '/static/index.html');
+});
+/* Routing to the game HTML page for requests to /path/x */
+app.get(['/play/:id','/play/'], function(req, res) {
   res.sendFile(__dirname + '/static/game.html');
 });
-
 /* Set the static files */
 app.use(express.static('static'));
+/* 404 route for anything else */
+app.get('*', function(req, res){
+  res.status(404).send('what???');
+});
 
 /* Socket IO connection */
 /* cheat sheet  - https://stackoverflow.com/a/10099325 */
