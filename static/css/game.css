@@ -18,6 +18,49 @@ body {
 }
 input {
   display: block;
+  margin-bottom: 5px;
+  padding: 3px;
+  border-radius: 2px;
+}
+.game-card {
+  width: 100%;
+  display: inline-block;
+  background: #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px 0;
+  font-size: 1em;
+  vertical-align: top;
+}
+.game-card .game-card {
+  width:auto;
+  max-width: 100%;
+  background: #eee;
+  margin-bottom: 1px;
+}
+.game-card>h2 {
+  margin: 0;
+  border-bottom: 4px solid #7b513d;
+}
+.game-card>h3 {
+  margin: 0;
+  border-bottom: 2px solid #7b513d;
+}
+.game-card button {
+  float: right;
+  padding: 5px;
+  margin: 0 0 0 5px;
+  border-radius: 5px;
+}
+.game-card button.primary {
+  background-color: #7b513d;
+  color: #ccc;
+}
+.game-card button.primary:hover {
+  background-color: #916855
+}
+.game-card button:hover {
+  background-color: #eee;
 }
 
 .game-container {

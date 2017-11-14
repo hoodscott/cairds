@@ -11,58 +11,95 @@
 
     <h1>cairds</h1>
 
-    <h2>About</h2>
-    <p>desc.</p>
+    <div class="game-card">
+      <h2>About</h2>
+      <p>
+        Multiplayer card 'game' using websockets and HTML5 draggable.
+      </p>
+      <p>
+        No game logic included; intended to replicate the functionality
+        of a deck of cards.
+      </p>
+    </div>
 
-    <hr/>
-    
-    <h2>Quick Start</h2>
-    <ul>
-      <li>
-        4 Player Texas Hold'em 
-        <button href="/play">Play</button>
+    <div class="game-card">
+      <h2>Quick Start</h2>
+      <div class="game-card">
+        <h3>4 Player Texas Hold'em</h3>
+        <p>desc</p>
+        <button class="primary" href="/play">Play</button>
         <button href="/edit">Edit</button>
-      </li>
-      <li>
-        6 Player Texas Hold'em 
-        <button href="/play">Play</button>
+      </div>
+      <div class="game-card">
+        <h3>6 Player Texas Hold'em</h3>
+        <p>desc</p>
+        <button class="primary" href="/play">Play</button>
         <button href="/edit">Edit</button>
-      </li>
-      <li>
-        Another Game
-        <button href="/play">Play</button>
+      </div>
+      <div class="game-card">
+        <h3>Other Game</h3>
+        <p>desc</p>
+        <button class="primary" href="/play">Play</button>
         <button href="/edit">Edit</button>
-      </li>
-    </ul>
+      </div>
+    </div>
 
-    <hr/>
+    <div class="game-card">
+      <h2>Create Own Game</h2>
+      <form>
+        <div class="game-card">
+          <h3>Player Settings</h3>
+          <label>Number of Players:</label>
+          <input type="number"/>
 
-    <h2>Custom Game</h2>
-    <label>Enter params:</label>
-    <input/>
-    <button>Load and Play</button>
+          <label>Max Cards Per Player:</label>
+          <input type="number"/>
+          <label>Stack:</label>
+          <input type="text"/>
+          <label>Horizontal or Vertical:</label>
+          <input type="text"/>
+          <label>Private:</label>
+          <input type="text"/>
+        </div>
 
-    <hr/>
+        <div class="game-card">
+          <h3>Add New Pile</h3>
+          <label>New Pile i:</label>
+          <input type="number"/>
+          <label>New Pile j:</label>
+          <input type="number"/>
+          <button class="primary">Add new pile</button>
+        </div>
 
-    <h2>Create Own Game</h2>
-    <form>
-      <label>Num players</label>
-      <input type="text"/>
+        <div class="game-card">
+          <h3>Pile i, j</h3>
 
-      <label>Cards per player hand</label>
-      <input type="number"/>
+          <label>Max Cards in Pile:</label>
+          <input type="number"/>
+  
+          <label>Stack:</label>
+          <input type="text"/>
+  
+          <label>Horizontal or Vertical:</label>
+          <input type="text"/>
+  
+          <label>Private:</label>
+          <input type="text"/>
 
-      <label>hand param</label>
-      <input type="number"/>
+          <button>Remove this pile</button>
+        </div>
+        
+        <p>copyable string holding params</p>
+        <button class="primary" role="submit">Play Game</button>
+      </form>
+    </div>
 
-      <label>pile params</label>
-      <input type="number"/>
-      <button>Remove this pile</button>
-      <button>Add new pile</button>
-
-      <p>copyable string holding params</p>
-      <button role="submit">Play Game</button>
-    </form>
+    <div class="game-card">
+      <h2>Custom Game</h2>
+      <label>Enter Parameters:</label>
+      <input></input>
+      <button class="primary">Load and Play</button>
+    </div>
 
     <div>
       <a href="https://www.github.com/hoodscott/cairds">
