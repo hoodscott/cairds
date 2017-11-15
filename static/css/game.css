@@ -171,17 +171,29 @@ select {
   line-height: 0.9;
   display: table;
 }
-#player-holder>.card-holder:nth-child(1){
+#player-holder>div:nth-child(1)>.card-holder {
   background-color: rgb(88, 188, 206);
 }
-#player-holder>.card-holder:nth-child(2){
+#player-holder>div:nth-child(2)>.card-holder {
   background-color: rgb(231, 131, 131);
 }
-#player-holder>.card-holder:nth-child(3){
+#player-holder>div:nth-child(3)>.card-holder {
   background-color: rgb(138, 228, 138);
 }
-#player-holder>.card-holder:nth-child(4){
+#player-holder>div:nth-child(4)>.card-holder {
   background-color: rgb(243, 243, 120);
+}
+#player-holder>div:nth-child(5)>.card-holder {
+  background-color: rgb(149, 88, 206);
+}
+#player-holder>div:nth-child(6)>.card-holder {
+  background-color: rgb(206, 139, 76);
+}
+#player-holder>div:nth-child(7)>.card-holder {
+  background-color: rgb(228, 138, 228);
+}
+#player-holder>div:nth-child(8)>.card-holder {
+  background-color: rgb(120, 243, 233);
 }
 svg {
   padding: 4px;
@@ -217,4 +229,28 @@ svg {
 }
 .player-from-3 {
   box-shadow:0px 0px 0px 2px yellow inset;
+}
+.player-5 {
+  box-shadow:0px 0px 0px 4px purple inset;
+}
+.player-from-5 {
+  box-shadow:0px 0px 0px 2px purple inset;
+}
+.player-6 {
+  box-shadow:0px 0px 0px 4px orange inset;
+}
+.player-from-6 {
+  box-shadow:0px 0px 0px 2px orange inset;
+}
+.player-7 {
+  box-shadow:0px 0px 0px 4px pink inset;
+}
+.player-from-7 {
+  box-shadow:0px 0px 0px 2px pink inset;
+}
+.player-8 {
+  box-shadow:0px 0px 0px 4px skyblue inset;
+}
+.player-from-8 {
+  box-shadow:0px 0px 0px 2px skyblue inset;
 }
