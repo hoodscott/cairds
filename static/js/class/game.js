@@ -4,7 +4,7 @@ class Game {
     /* Array of players */
     let player_arr = [];
     player_names.forEach(function(p,i) {
-      player_arr.push(new Player(p,i,hand_params));
+      player_arr.push(new Player(p,i,...hand_params));
     });
     this.players = player_arr;  
 
@@ -19,7 +19,7 @@ class Game {
     }
   }
   /* Get card from a pile  */
-  getCardfromPile(row,col,i) {
+  getCardFromPile(row,col,i) {
     return this.piles[row][col].cards.splice(i,1)[0];
   }
   getCardFromHand(player,hand,i) {

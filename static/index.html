@@ -27,12 +27,14 @@
       <div class="game-card">
         <h3>4 Player Texas Hold'em</h3>
         <p>desc</p>
-        <a href="/play"><button class="primary" href="/play">Play</button></a>
+        <a href="/play"><button class="primary">Play</button></a>
       </div>
       <div class="game-card">
         <h3>6 Player Texas Hold'em</h3>
         <p>desc</p>
-        <button class="primary" href="/play">Play</button>
+        <a href="/create/[[[0,1,2,3,4,5],[true,true,false,false,true,5]],[[[true,false,true,false,false,52],[],[],[],[],[],[],[],[],[],[],[],[]],[[true,true,false,false,false,5],[true,true,false,false,false,5],[true,true,false,false,false,5],[true,false,false,false,false,5],[true,false,false,false,false,5],[],[],[],[],[],[],[],[]],[[],[],[],[],[],[],[],[],[],[],[],[],[]],[[],[],[],[],[],[],[],[],[],[],[],[],[]]]]">
+          <button class="primary">Play</button>
+        </a>
       </div>
       <div class="game-card">
         <h3>Other Game</h3>
@@ -58,7 +60,6 @@
               <option value="8">8</option>
           </select>
           <label for="player_max">Max Cards Per Player:</label>
-          <!-- <input id="player_max" type="number" min="1" max="52" step="1" value="5"/> -->
           <select id="player_max">
               <option value="0">0</option>              
               <option value="1">1</option>
@@ -149,12 +150,14 @@
             <option value="11">11</option>
             <option value="12">12</option>
           </select>
-          <button id="new_add" class="primary">Add new pile</button>
+          <button id="new_add">Add new pile</button>
         </div>
         
-        <label for="parameters">Generated Parameters:</label>
-        <input id="parameters" disabled="disabled"/>
-        <button id="play_new_game" class="primary" role="submit">Play Game</button>
+        <div class="game-card">
+          <label for="new_parameters">Generated Parameters:</label>
+          <input id="new_parameters" disabled="disabled"/>
+          <button id="play_new_game" class="primary" role="submit">Play Game</button>          
+        </div>
       </form>
     </div>
 

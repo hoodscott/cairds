@@ -1,17 +1,15 @@
 /* Initialise basic texas holdem game */
-function initialiseGame() {
-  const player_names = ['Alice','Bob','Charlie','Dave'];
-  const hand_params = [[true,true,false,false,true]];
-  const pile_params = [[[true,false,true,false,false,52],[],[],[],[],[],[],[],[],[],[],[],[]],
+function initialiseGame( 
+  player_names = ['Alice','Bob','Charlie','Dave'],
+  hand_params = [true,true,false,false,true],
+  pile_params = [[[true,false,true,false,false,52],[],[],[],[],[],[],[],[],[],[],[],[]],
                        [[true,true,true,false],[true,true,true,false],[true,true,true,false],[true,false,true,false],[true,false,true,false],[],[],[],[],[],[],[],[]],
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]],
-                       [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
-  console.log(validatePileParams(pile_params));               
+                       [[],[],[],[],[],[],[],[],[],[],[],[],[]]]) {
   if (validatePlayerParams(hand_params)
     && validatePileParams(pile_params)) {
-      return new Game(player_names,hand_params,pile_params);
+      return new Game(player_names,[hand_params],pile_params);
   }
-  console.error('Invalid parameters');
 }
 /* Draw game as HTML */
 function drawGame() {
@@ -32,14 +30,23 @@ let dragged_counter = 0;
 let dragged_ignorenext = false;
 /* Game globals */
 let game;
-let player_pointer;
+let player_pointer = -1;
 const socket = io();
-/* Initialise */
-game = initialiseGame();
-player_pointer = '-1';
+/* Join room depending on url */
+socket.on('connect', function() {
+  socket.emit('room', 'room'); //todo - get and store end of url
+});
 /* Listen for moves over the socket */
-socket.on('init', function(moves) {
-  moves.forEach(function(move) {
+socket.on('init', function(session) {
+  /* Initialise */
+  game = initialiseGame(session.params[0][0],
+                        session.params[0][1],
+                        session.params[1]);
+  /* Draw game */
+  addPlayerListeners();
+  drawGame();
+  /* Complete any moves on server */
+  session.moves.forEach(function(move) {
     switch(move[0]) {
       case 'reset':
         resetGame();
@@ -74,6 +81,3 @@ socket.on('sort', function(move) {
 socket.on('flip', function(move) {
   flipCards(move);
 });
-/* Draw game */
-addPlayerListeners();
-drawGame();

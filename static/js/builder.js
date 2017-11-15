@@ -1,3 +1,5 @@
+let all_params;
+
 /* Get player parameters from form */
 function getPlayerParams() {
   let params = [[],[]]
@@ -21,7 +23,7 @@ function getPileParams(row,col) {
   params.push(document.getElementById('pile_' + row + '_' + col + '_stack').checked);
   params.push(document.getElementById('pile_' + row + '_' + col + '_vert').checked);
   params.push(false);
-  params.push(document.getElementById('pile_' + row + '_' + col + '_max').value);
+  params.push(parseInt(document.getElementById('pile_' + row + '_' + col + '_max').value));
   return params;
 }
 /* Create an array of pile parameters */
@@ -121,12 +123,11 @@ document.getElementById('new_add').addEventListener('click', function(e) {
     /* Add event listener to remove button */
     document.getElementById('pile_' + i + '_' + j + '_remove').addEventListener('click', function(e) {
       e.preventDefault();
-      console.log(this.parentNode);
       this.parentNode.remove();
     });
   }
 });
-/* Add event listener to body */
+/* Add event listener to all change events on the body */
 document.body.addEventListener('change', function (event) {
   /* Update copyable parameter string */
   updateParams();
@@ -136,5 +137,10 @@ function updateParams() {
   let params = [];
   params.push(getPlayerParams());
   params.push(getPilesParams());
-  document.getElementById('parameters').value = JSON.stringify(params);
+  document.getElementById('new_parameters').value = JSON.stringify(params);
+  all_params = params;
 }
+document.getElementById('play_new_game').addEventListener('click', function(e) {
+  e.preventDefault();
+  window.location.assign('/create/' + JSON.stringify(all_params));
+});
