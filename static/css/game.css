@@ -16,6 +16,9 @@ body {
                     linear-gradient(180deg, transparent 50%, rgba(255,255,255,.08) 50%);
   background-size: 13px, 29px, 37px, 53px;
 }
+h1 {
+  text-decoration: underline;
+}
 a:visited {
   color: initial;
 }

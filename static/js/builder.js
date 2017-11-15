@@ -58,7 +58,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
-        <option value="5">5</option>
+        <option value="5" selected="selected">5</option>
         <option value="6">6</option>
         <option value="7">7</option>
         <option value="8">8</option>
@@ -111,7 +111,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
       <input id="pile_${i}_${j}_faceup" type="checkbox"/>
       <label for="pile_${i}_${j}_stack">Stack:</label>
       <input id="pile_${i}_${j}_stack" type="checkbox"/>
-      <label for="pile_${i}_${j}_vert">Horizontal or Vertical:</label>
+      <label for="pile_${i}_${j}_vert">Vertical:</label>
       <input id="pile_${i}_${j}_vert" type="checkbox"/>
       <button id="pile_${i}_${j}_remove">Remove this pile</button>
     </div>`;

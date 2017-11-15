@@ -57,7 +57,7 @@
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
-              <option value="4">4</option>
+              <option value="4" selected="selected">4</option>
               <option value="5">5</option>
               <option value="6">6</option>
               <option value="7">7</option>
@@ -69,7 +69,7 @@
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
-              <option value="5">5</option>
+              <option value="5" selected="selected">5</option>
               <option value="6">6</option>
               <option value="7">7</option>
               <option value="8">8</option>
@@ -128,18 +128,32 @@
           <input id="player_secret" type="checkbox"/>
         </div>
 
+        <div id="pile_0_0" class="game-card">
+          <h3>Pile 0, 0</h3>
+          <label for="pile_0_0_max">Max Cards in Pile:</label>
+          <select id="pile_0_0_max">
+            <option value="52" selected="selected" disabled=-"disabled">52</option>
+          </select>
+          <label for="pile_0_0_faceup">Faceup:</label>
+          <input id="pile_0_0_faceup" type="checkbox">
+          <label for="pile_0_0_stack">Stack:</label>
+          <input id="pile_0_0_stack" type="checkbox" checked="checked" disabled="disabled">
+          <label for="pile_0_0_vert">Vertical:</label>
+          <input id="pile_0_0_vert" type="checkbox">
+        </div>
+
         <div class="game-card">
           <h3>Add New Pile</h3>
           <label for="new_row">Row:</label>
           <select id="new_row">
             <option value="0">0</option>              
-            <option value="1">1</option>
+            <option value="1" selected="selected">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
           </select>
           <label for="new_col">Column:</label>
           <select id="new_col">
-            <option value="0">0</option>              
+            <option value="0" selected="selected">0</option>              
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
