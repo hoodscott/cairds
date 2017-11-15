@@ -31,7 +31,6 @@ function resetGame() {
   game.setPile(0,0,createFullDeck());
   /* Draw game */
   drawGame();
-  /* Draw borders around last move */
   clearControlBorders();
 }
 /* Sort specifed cards */

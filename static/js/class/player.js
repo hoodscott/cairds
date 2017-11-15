@@ -5,6 +5,7 @@ class Player {
     this.order = order;
     /* Array of hands of cards this player owns */
     const h = [];
+    player_params = [player_params];
     player_params.forEach(function(params,i) {
       h.push(new Pile(...params));
     });
@@ -25,6 +26,8 @@ class Player {
     if (this.order == play_order){
       owner = true;
     }
-    return this.hands[0].toHTML(owner, 'player', this.order, 0);
+    let holder = document.createElement('div');
+    holder.appendChild(this.hands[0].toHTML(owner, 'player', this.order, 0));
+    return holder; 
   }
 }

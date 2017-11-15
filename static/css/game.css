@@ -120,8 +120,7 @@ select {
 .card-holder.horizontal>.card:not(:first-child) {
   margin-left: -15px;
 }
-.card-holder.vertical,
-.card-holder.stack {
+.card-holder {
   display: inline-block;
   vertical-align: top;
   height: 100px;
