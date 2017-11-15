@@ -12,7 +12,7 @@ function getPlayerParams() {
   params[1].push(document.getElementById('player_stack').checked);
   params[1].push(document.getElementById('player_vert').checked);
   params[1].push(document.getElementById('player_secret').checked);
-  params[1].push(document.getElementById('player_max').value);
+  params[1].push(parseInt(document.getElementById('player_max').value));
   return params;
 }
 /* Get pile parameters from form */
@@ -54,7 +54,6 @@ document.getElementById('new_add').addEventListener('click', function(e) {
       <h3>Pile ${i}, ${j}</h3>
       <label for="pile_${i}_${j}_max">Max Cards in Pile:</label>
       <select id="pile_${i}_${j}_max">
-        <option value="0">0</option>              
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -143,4 +142,8 @@ function updateParams() {
 document.getElementById('play_new_game').addEventListener('click', function(e) {
   e.preventDefault();
   window.location.assign('/create/' + JSON.stringify(all_params));
+});
+document.getElementById('load_custom').addEventListener('click', function(e) {
+  e.preventDefault();
+  window.location.assign('/create/' + JSON.stringify(JSON.parse(document.getElementById('custom_params').value)));
 });
