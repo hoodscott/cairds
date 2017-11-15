@@ -16,11 +16,21 @@ body {
                     linear-gradient(180deg, transparent 50%, rgba(255,255,255,.08) 50%);
   background-size: 13px, 29px, 37px, 53px;
 }
-input {
+a:visited {
+  color: initial;
+}
+/* index styles */
+label {
+  display: block;
+}
+select, input {
   display: block;
   margin-bottom: 5px;
   padding: 3px;
   border-radius: 2px;
+}
+select {
+  width: 100%;
 }
 .game-card {
   width: 100%;
@@ -28,7 +38,7 @@ input {
   background: #ddd;
   border-radius: 10px;
   padding: 20px;
-  margin: 10px 0;
+  margin: 10px 3px 10px 0;
   font-size: 1em;
   vertical-align: top;
 }
@@ -62,7 +72,7 @@ input {
 .game-card button:hover {
   background-color: #eee;
 }
-
+/* game styles */
 .game-container {
   display: inline-block;
   padding: 10px;
