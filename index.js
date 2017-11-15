@@ -15,8 +15,7 @@ app.get(['/play/:id','/play/'], function(req, res) {
 /* Routing to the game HTML page for requests to /create/x */
 app.get(['/create/:p'], function(req, res) {
   /* Random string */
-  // const id = Math.random().toString(36).slice(2);
-  const id = 'room';
+  const id = Math.random().toString(36).slice(2);
   /* Create session object and add it to the global sessions holder */
   sessions[id] = {};
   sessions[id].params = JSON.parse(req.params.p);

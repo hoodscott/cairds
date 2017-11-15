@@ -34,7 +34,7 @@ let player_pointer = -1;
 const socket = io();
 /* Join room depending on url */
 socket.on('connect', function() {
-  socket.emit('room', 'room'); //todo - get and store end of url
+  socket.emit('room', window.location.href.split('/').slice(-1)[0]);
 });
 /* Listen for moves over the socket */
 socket.on('init', function(session) {
