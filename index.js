@@ -35,11 +35,11 @@ app.get('*', function(req, res){
 io.on('connection', function(socket) {
   let url = socket.request.headers.referer.split('/').slice(-1)[0];
   let session = sessions[url];
-  let room = url;
-  //todo - catch error if no params found
+  if (!session) {
+    session = {};
+  }
 
   socket.on('room', function(room) {
-    room = room;
     socket.join(room);
   });
 
@@ -50,31 +50,31 @@ io.on('connection', function(socket) {
   socket.on('move', function(obj) {
     session.moves.push(['move', obj]);
     /* Emit the message to all connections */
-    io.sockets.in(room).emit('move', obj);
+    io.sockets.in(url).emit('move', obj);
   });
   /* Listen for incoming resets */
   socket.on('reset', function() {
     session.moves = [['reset']];
     /* Emit the message to all connections */
-    io.sockets.in(room).emit('reset');
+    io.sockets.in(url).emit('reset');
   });
   /* Listen for incoming sets */
   socket.on('set', function(obj) {
     session.moves.push(['set', obj]);
     /* Emit the message to all connections */
-    io.sockets.in(room).emit('set', obj);
+    io.sockets.in(url).emit('set', obj);
   });
   /* Listen for incoming flips */
   socket.on('flip', function(obj) {
     session.moves.push(['flip', obj]);
     /* Emit the message to all connections */
-    io.sockets.in(room).emit('flip', obj);
+    io.sockets.in(url).emit('flip', obj);
   });
   /* Listen for incoming sorts */
   socket.on('sort', function(obj) {
     session.moves.push(['sort', obj]);
     /* Emit the message to all connections */
-    io.sockets.in(room).emit('sort', obj);
+    io.sockets.in(url).emit('sort', obj);
   });
   /* Listen for any disconnections */
   socket.on('disconnect', function() {
