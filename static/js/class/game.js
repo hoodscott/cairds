@@ -43,6 +43,9 @@ class Game {
   copyCardsfromHand(player,hand) {
     return this.players[player].hands[hand].cards.slice(0);
   }
+  getNumPlayers() {
+    return this.players.length;
+  }
   /* Deal one card to group of cards */
   addToPile(row,col,i,card) {
     this.piles[row][col].cards.splice(i,0,card);

@@ -4,15 +4,11 @@ document.getElementById('reset').addEventListener('click', function(){
 });
 /* Select player event listeners */
 function addPlayerListeners() {
-  [].forEach.call(
-    document.querySelectorAll('.player-select'),
-    function(e) {
-      e.addEventListener('click', function() {
-        player_pointer = e.dataset.player;
-        drawGame();
-      });
-    }
-  );
+  document.querySelector('.player-select').addEventListener('change', function(e) {
+    player_pointer = this.options[this.selectedIndex].value;
+    this.disabled = "disabled";
+    drawGame();
+  });
 }
 /* Add draggable events to HTML elements */
 function addDraggableEvents() {

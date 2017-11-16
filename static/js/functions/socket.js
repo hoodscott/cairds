@@ -24,7 +24,7 @@ function resetGame() {
       }
     }
     /* Clear hands */
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < game.getNumPlayers(); i++) {
       game.setHand(i,0,[]);
     }
   /* Create deck */

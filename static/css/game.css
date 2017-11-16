@@ -102,6 +102,9 @@ select {
   box-shadow: 0px 0px 0px 1px black inset;
   background-color: lightgrey;
 }
+#control-buttons>button.half {
+  width:35px;
+}
 #control-buttons>button:hover,
 #control-buttons>button:focus {
   background-color: white;
@@ -233,27 +236,27 @@ svg {
 .player-from-3 {
   box-shadow:0px 0px 0px 2px yellow inset;
 }
-.player-5 {
+.player-4 {
   box-shadow:0px 0px 0px 4px purple inset;
 }
-.player-from-5 {
+.player-from-4 {
   box-shadow:0px 0px 0px 2px purple inset;
 }
-.player-6 {
+.player-5 {
   box-shadow:0px 0px 0px 4px orange inset;
 }
-.player-from-6 {
+.player-from-5 {
   box-shadow:0px 0px 0px 2px orange inset;
 }
-.player-7 {
+.player-6 {
   box-shadow:0px 0px 0px 4px pink inset;
 }
-.player-from-7 {
+.player-from-6 {
   box-shadow:0px 0px 0px 2px pink inset;
 }
-.player-8 {
+.player-7 {
   box-shadow:0px 0px 0px 4px skyblue inset;
 }
-.player-from-8 {
+.player-from-7 {
   box-shadow:0px 0px 0px 2px skyblue inset;
 }

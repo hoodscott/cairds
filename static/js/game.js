@@ -8,6 +8,15 @@ function initialiseGame(
                        [[],[],[],[],[],[],[],[],[],[],[],[],[]]]) {
   if (validatePlayerParams(hand_params)
     && validatePileParams(pile_params)) {
+      /* Add options to player select */
+      const player_select = document.querySelector('.player-select');
+      player_names.forEach(function(e, i) {
+        const player_option = document.createElement('option');
+        player_option.value = i;
+        player_option.innerText = e;
+        player_select.appendChild(player_option);
+      });
+      /* Create game */
       return new Game(player_names,[hand_params],pile_params);
   }
   else {
@@ -43,7 +52,6 @@ socket.on('connect', function() {
 socket.on('init', function(session) {
   try {
     if (Object.keys(session).length === 0) {
-      console.log(session);
       throw 'Blank parameters.';
     }
     /* Initialise */
