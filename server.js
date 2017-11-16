@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+const PORT = process.env.PORT || 3000
 let sessions = {};
 
 /* Return the index HTML page for requests to / */
@@ -83,6 +84,6 @@ io.on('connection', function(socket) {
 });
 
 /* Set up server on port 3000 */
-http.listen(3000, function() {
-  console.log('listening on *:3000');
+http.listen(PORT, function() {
+  console.log(`Listening on ${ PORT }`);
 });
