@@ -10,6 +10,9 @@ function initialiseGame(
     && validatePileParams(pile_params)) {
       return new Game(player_names,[hand_params],pile_params);
   }
+  else {
+    throw 'Invalid Parameters';
+  }
 }
 /* Draw game as HTML */
 function drawGame() {
@@ -38,46 +41,60 @@ socket.on('connect', function() {
 });
 /* Listen for moves over the socket */
 socket.on('init', function(session) {
-  /* Initialise */
-  game = initialiseGame(session.params[0][0],
-                        session.params[0][1],
-                        session.params[1]);
-  /* Draw game */
-  addPlayerListeners();
-  drawGame();
-  /* Complete any moves on server */
-  session.moves.forEach(function(move) {
-    switch(move[0]) {
-      case 'reset':
-        resetGame();
-        break;
-      case 'move':
-        makeMove(move[1]);
-        break;
-      case 'set':
-        setCards(move[1]);
-        break;
-      case 'sort':
-        sortCards(move[1]);
-        break;
-      case 'flip':
-        flipCards(move[1]);
-        break;
+  try {
+    if (Object.keys(session).length === 0) {
+      console.log(session);
+      throw 'Blank parameters.';
     }
-  });
-});
-socket.on('reset', function() {
-  resetGame();
-});
-socket.on('move', function(move) {
-  makeMove(move);
-});
-socket.on('set', function(move) {
-  setCards(move);
-});
-socket.on('sort', function(move) {
-  sortCards(move);
-});
-socket.on('flip', function(move) {
-  flipCards(move);
+    /* Initialise */
+    game = initialiseGame(session.params[0][0],
+                          session.params[0][1],
+                          session.params[1]);
+    /* Draw game */
+    addPlayerListeners();
+    drawGame();
+    /* Complete any moves on server */
+    session.moves.forEach(function(move) {
+      switch(move[0]) {
+        case 'reset':
+          resetGame();
+          break;
+        case 'move':
+          makeMove(move[1]);
+          break;
+        case 'set':
+          setCards(move[1]);
+          break;
+        case 'sort':
+          sortCards(move[1]);
+          break;
+        case 'flip':
+          flipCards(move[1]);
+          break;
+      }
+    });
+    socket.on('reset', function() {
+      resetGame();
+    });
+    socket.on('move', function(move) {
+      makeMove(move);
+    });
+    socket.on('set', function(move) {
+      setCards(move);
+    });
+    socket.on('sort', function(move) {
+      sortCards(move);
+    });
+    socket.on('flip', function(move) {
+      flipCards(move);
+    });
+  }
+  catch(e) {
+    const holder = document.querySelector('.game-container');
+    holder.innerHTML = '';
+    const mess = document.createElement('h2');
+    mess.innerText = e;
+    holder.appendChild(mess);
+    console.error(e);
+  }
 });
