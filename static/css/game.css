@@ -102,9 +102,6 @@ select {
   box-shadow: 0px 0px 0px 1px black inset;
   background-color: lightgrey;
 }
-#control-buttons>button.half {
-  width:35px;
-}
 #control-buttons>button:hover,
 #control-buttons>button:focus {
   background-color: white;
