@@ -3,10 +3,9 @@ let all_params;
 /* Get player parameters from form */
 function getPlayerParams() {
   let params = [[],[]]
+  const names = ['blue','red','green','yellow','purple','orange','pink','skyblue'];
   let max = parseInt(document.getElementById('player_num').value);
-  for (let i = 0; i < max; i++) {
-    params[0].push(i);
-  }
+  params[0] = names.slice(0,max)
   params[1].push(true);
   params[1].push(document.getElementById('player_faceup').checked);
   params[1].push(document.getElementById('player_stack').checked);
@@ -63,7 +62,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
         <option value="7">7</option>
         <option value="8">8</option>
         <option value="9">9</option>
-        <option value="10">10</option>              
+        <option value="10">10</option>
         <option value="11">11</option>
         <option value="12">12</option>
         <option value="13">13</option>
@@ -73,7 +72,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
         <option value="17">17</option>
         <option value="18">18</option>
         <option value="19">19</option>
-        <option value="20">20</option>              
+        <option value="20">20</option>
         <option value="21">21</option>
         <option value="22">22</option>
         <option value="23">23</option>
@@ -83,7 +82,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
         <option value="27">27</option>
         <option value="28">28</option>
         <option value="29">29</option>
-        <option value="30">30</option>              
+        <option value="30">30</option>
         <option value="31">31</option>
         <option value="32">32</option>
         <option value="33">33</option>
@@ -93,7 +92,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
         <option value="37">37</option>
         <option value="38">38</option>
         <option value="39">39</option>
-        <option value="40">40</option>              
+        <option value="40">40</option>
         <option value="41">41</option>
         <option value="42">42</option>
         <option value="43">43</option>
@@ -103,7 +102,7 @@ document.getElementById('new_add').addEventListener('click', function(e) {
         <option value="47">47</option>
         <option value="48">48</option>
         <option value="49">49</option>
-        <option value="50">50</option>              
+        <option value="50">50</option>
         <option value="51">51</option>
         <option value="52">52</option>
       </select>
