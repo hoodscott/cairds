@@ -12,15 +12,25 @@
     <div class="game-container">
       <div id="control-buttons">
         <button id="reset">reset</button>
-        <select class="player-select"></select>
+        <select class="player-select">
+          <option value="" selected disabled hidden>Select Player</option>
+        </select>
       </div><!--
       --><div class="card-holder stack" data-type="shuffle">shuffle</div><!-- 
         inline blocks treat the tabs as spaces
       --><div class="card-holder stack" data-type="sort">sort</div><!--
         need to comment out any whitespace between them
       --><div class="card-holder stack" data-type="flip">flip</div>
-      
       <div id="game-holder"></div>
+    </div>
+
+    <div class="game-card">
+      <h2>How To</h2>
+      <p>Drag cards between the cells to move them.</p>
+      <p>Send the link to someone else so they can also move the cards.</p>
+      <p>Drag card to one of these 'control boxes' at the top to perform that action on the pile of cards it was dragged from.</p>
+      <p>The coloured cells denote each player's cards and the white cells intend to represent the 'table'.</p>
+      <p>The last move performed will can be identified by the coloured outlines.&emsp;The colour denotes the player who made the move.</p>
     </div>
 
     <div>
