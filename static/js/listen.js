@@ -6,7 +6,6 @@ document.getElementById('reset').addEventListener('click', function(){
 function addPlayerListeners() {
   document.querySelector('.player-select').addEventListener('change', function(e) {
     player_pointer = this.options[this.selectedIndex].value;
-    this.disabled = "disabled";
     drawGame();
   });
 }
