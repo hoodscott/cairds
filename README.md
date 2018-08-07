@@ -9,7 +9,7 @@ Clone repository, then run the following commands:
 
 ```
 npm install
-node index.js
+node server.js
 ```
 
 Then view the site at http://localhost:3000.
