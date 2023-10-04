@@ -1,5 +1,7 @@
 # cairds
 
+<img src="/img/example.png" alt="Screenshot of multiplayer card game" width=750/>
+
 Multiplayer card 'game' using websockets and HTML5 draggable.
 
 No game logic included; intended to replicate the functionality of a deck of cards.
